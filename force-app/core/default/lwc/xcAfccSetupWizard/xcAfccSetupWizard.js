@@ -102,10 +102,6 @@ export default class XcAfccSetupWizard extends LightningElement {
     return !this.state || this.state.configCount === 0;
   }
 
-  get csvFallbackAvailable() {
-    return this.state && this.state.csvImportAvailable;
-  }
-
   get orgType() {
     return this.environment.organizationType || 'Unknown';
   }

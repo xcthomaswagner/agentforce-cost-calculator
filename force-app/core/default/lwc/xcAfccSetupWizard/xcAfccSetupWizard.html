@@ -44,7 +44,10 @@
             <h2>Native Source Discovery</h2>
             <p>Check Service Cloud and Agentforce source objects, then sync live usage into the cost ledger.</p>
           </div>
-          <span class={nativeBadgeClass}>{nativeResult}</span>
+          <div class="header-actions">
+            <span class={nativeBadgeClass}>{nativeResult}</span>
+            <lightning-button variant="brand" label="Sync Native Usage" onclick={syncNative} disabled={busy}></lightning-button>
+          </div>
         </div>
 
         <template if:true={nativeReadiness}>
@@ -94,13 +97,6 @@
             </table>
           </div>
         </template>
-
-        <div class="section-actions">
-          <lightning-button variant="brand" label="Sync Native Usage" onclick={syncNative} disabled={busy}></lightning-button>
-          <template if:true={csvFallbackAvailable}>
-            <a class="slds-button slds-button_neutral" href="/lightning/n/XC_AFCC_CSV_Importer">CSV Fallback</a>
-          </template>
-        </div>
 
         <template if:true={nativeSyncResult}>
           <dl class="metrics compact">
