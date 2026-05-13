@@ -1,5 +1,5 @@
 <template>
-  <lightning-card title="XC Agentforce Cost Calculator" icon-name="utility:settings">
+  <lightning-card title="Agentforce Cost Calculator" icon-name="utility:settings">
     <div slot="actions" class="actions">
       <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" title="Refresh" onclick={load}></lightning-button-icon>
     </div>
@@ -64,7 +64,7 @@
               <dd>{nativeReadiness.nativeSourceRows}</dd>
             </div>
             <div>
-              <dt>Live Ledger Rows <lightning-helptext content="Normalized AFCC cost ledger rows created from native Salesforce source records and marked with source system LIVE."></lightning-helptext></dt>
+              <dt>Live Ledger Rows <lightning-helptext content="Normalized cost ledger rows created from native Salesforce source records and marked with source system LIVE."></lightning-helptext></dt>
               <dd>{nativeReadiness.liveLedgerRows}</dd>
             </div>
           </dl>

@@ -4,7 +4,7 @@
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
-    <label>XC Agentforce Cost Calculator</label>
+    <label>Agentforce Cost Calculator</label>
     <navType>Standard</navType>
     <tabs>standard-home</tabs>
     <tabs>XC_AFCC_Setup</tabs>
