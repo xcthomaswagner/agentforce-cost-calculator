@@ -11,7 +11,9 @@
             <h2>Org Setup</h2>
             <p>Confirm the calculator is configured before analyzing native Salesforce data.</p>
           </div>
-          <lightning-button variant="brand-outline" label="Create Default Config" onclick={ensure} disabled={busy}></lightning-button>
+          <template if:true={needsConfig}>
+            <lightning-button variant="brand" label="Create Default Config" onclick={ensure} disabled={busy}></lightning-button>
+          </template>
         </div>
 
         <template if:true={state}>
@@ -93,9 +95,11 @@
           </div>
         </template>
 
-        <div class="button-row">
+        <div class="section-actions">
           <lightning-button variant="brand" label="Sync Native Usage" onclick={syncNative} disabled={busy}></lightning-button>
-          <a href="/lightning/n/XC_AFCC_CSV_Importer">Open CSV Fallback</a>
+          <template if:true={csvFallbackAvailable}>
+            <a class="slds-button slds-button_neutral" href="/lightning/n/XC_AFCC_CSV_Importer">CSV Fallback</a>
+          </template>
         </div>
 
         <template if:true={nativeSyncResult}>
@@ -134,12 +138,11 @@
             <h2>Data Health</h2>
             <p>Run health checks before using reports or case-level explanations.</p>
           </div>
-          <a href="/lightning/n/XC_AFCC_Data_Health">Open Data Health</a>
         </div>
 
-        <div class="status-row">
+        <div class="section-actions split">
           <span class={healthBadgeClass}>{healthResult}</span>
-          <lightning-button label="Run Data Health" onclick={runHealth} disabled={busy}></lightning-button>
+          <lightning-button variant="brand" label="Run Health Check" onclick={runHealth} disabled={busy}></lightning-button>
         </div>
 
         <template if:true={health}>

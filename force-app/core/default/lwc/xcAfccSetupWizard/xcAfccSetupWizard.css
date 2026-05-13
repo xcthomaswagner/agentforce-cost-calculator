@@ -69,8 +69,7 @@
   overflow-wrap: anywhere;
 }
 
-.button-row,
-.status-row,
+.section-actions,
 .link-row,
 .actions {
   display: flex;
@@ -79,7 +78,11 @@
   flex-wrap: wrap;
 }
 
-.status-row {
+.section-actions {
+  margin-top: 0.75rem;
+}
+
+.section-actions.split {
   justify-content: space-between;
   margin-bottom: 1rem;
 }
