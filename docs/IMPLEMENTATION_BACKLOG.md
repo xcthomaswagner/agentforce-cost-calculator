@@ -113,3 +113,18 @@
 8. Run Step 2 against sandbox.
 9. Validate no synthetic leakage.
 10. Produce release readiness scorecard.
+
+---
+
+## Phase 8 — Prod-Like Agentforce Sandbox Harness
+
+1. Add Step 3 script.
+2. Add production-like business seed Apex.
+3. Add runtime readiness validation Apex.
+4. Add conversation runner contract.
+5. Add production-like scenario config.
+6. Validate against an Agentforce-enabled sandbox.
+7. Build channel-specific runner for the selected sandbox path.
+8. Generate 150 runtime conversations.
+9. Sync native runtime data.
+10. Verify dashboard, data health, grouped report, and case explorer from `LIVE` rows.

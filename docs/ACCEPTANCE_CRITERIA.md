@@ -6,6 +6,7 @@ The release consists of two completed steps:
 
 1. Script-created synthetic test environment.
 2. Script-bootstrapped Agentforce sandbox without synthetic data.
+3. Script-assisted production-like Agentforce sandbox validation.
 
 Production deployment is not part of this release.
 
@@ -115,3 +116,41 @@ Step 2 is complete when:
 - [ ] If no native source data exists, script reports `READY_FOR_NATIVE_DATA` or `MISSING_NATIVE_SOURCE`.
 - [ ] If usage data exists, script reports `ANALYSIS_READY`.
 - [ ] Sandbox readiness validator returns PASS, NATIVE_READY, or READY_FOR_NATIVE_DATA.
+
+---
+
+## Step 3 Acceptance Criteria: Prod-Like Agentforce Sandbox Harness
+
+Step 3 is complete when:
+
+### Setup
+
+- [ ] A developer can run `scripts/mvp/03-run-prod-like-agentforce-sandbox.sh --target-org <alias>`.
+- [ ] The script validates the target org is not production.
+- [ ] The script deploys or validates Core only.
+- [ ] Demo Harness metadata is absent.
+- [ ] Agentforce runtime prerequisites are reported clearly.
+
+### Business Seed
+
+- [ ] The script creates real Accounts.
+- [ ] The script creates real Contacts.
+- [ ] The script creates real Cases.
+- [ ] Seeded records are traceable by run key.
+- [ ] No synthetic ledger or staging rows are created by the seed.
+
+### Runtime Conversation Path
+
+- [ ] A configured conversation runner starts real Agentforce/Messaging conversations.
+- [ ] Salesforce runtime creates native conversation/session/work records.
+- [ ] The runner does not directly insert `MessagingSession`, `Conversation`, `AgentWork`, staging, or ledger records.
+- [ ] At least 150 runtime conversations can be generated for the standard scenario.
+
+### Analysis
+
+- [ ] Core native sync creates `LIVE` staging rows.
+- [ ] Ledger builder creates `LIVE` ledger rows.
+- [ ] Data health runs from runtime-created data.
+- [ ] Dashboard shows runtime-created usage.
+- [ ] Grouped report works from runtime-created usage.
+- [ ] Case Explorer explains seeded Cases where the runtime path linked usage to Cases.

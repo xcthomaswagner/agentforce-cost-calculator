@@ -93,6 +93,52 @@ Required steps:
 
 ---
 
+### 2.3 `scripts/mvp/03-run-prod-like-agentforce-sandbox.sh`
+
+Purpose: create production-like sandbox data by seeding real business records and driving real Agentforce runtime conversations.
+
+Usage:
+
+```bash
+scripts/mvp/03-run-prod-like-agentforce-sandbox.sh \
+  --target-org customer-agentforce-sandbox \
+  --deploy-core \
+  --case-count 150 \
+  --conversation-runner scripts/conversation/customer-runner.sh
+```
+
+Options:
+
+| Option | Required | Description |
+|---|---:|---|
+| `--target-org` | Yes | target sandbox alias |
+| `--case-count` | No | number of Accounts, Contacts, and Cases to seed; default 150 |
+| `--run-key` | No | explicit run key for traceability |
+| `--deploy-core` | No | deploy Core before running |
+| `--skip-seed` | No | skip business record seeding |
+| `--conversation-runner` | No | executable runner that drives real Agentforce conversations |
+| `--skip-sync` | No | skip native sync and data health |
+| `--validate-only` | No | validate only |
+| `--skip-open` | No | do not open browser |
+
+Required behavior:
+
+1. Validate target org is authenticated.
+2. Refuse production.
+3. Deploy Core only when requested.
+4. Confirm Demo Harness is absent.
+5. Assign `XC_AFCC_Admin`.
+6. Seed real Accounts, Contacts, and Cases unless skipped.
+7. Validate native runtime source availability.
+8. Run the configured conversation runner if provided.
+9. Sync native runtime-created rows.
+10. Run data health.
+11. Print a scorecard.
+
+The conversation runner must not insert Agentforce runtime objects or XC ledger objects directly.
+
+---
+
 ## 3. Validation Scripts
 
 ### `scripts/validate/no-demo-in-core.sh`
@@ -185,6 +231,19 @@ Should call:
 ```apex
 System.debug(JSON.serializePretty(XC_AFCC_DataHealthService.validateSandboxReadiness()));
 ```
+
+### `scripts/apex/seedProdLikeBusinessData.apex`
+
+Used by Step 3 to create real sandbox business records. The shell script replaces placeholders before execution:
+
+```apex
+Integer caseCount = __CASE_COUNT__;
+String runKey = '__RUN_KEY__';
+```
+
+### `scripts/apex/validateAgentforceRuntimeReadiness.apex`
+
+Prints standard object counts, supported runtime source availability, `LIVE` staging rows, `LIVE` ledger rows, and Core native readiness.
 
 ### `scripts/apex/resetSyntheticData.apex`
 

@@ -6,7 +6,7 @@
 
 Build a Salesforce-native application that calculates and explains Agentforce-related service cost by Case, Queue, Agent, Topic, Channel, Outcome, and time period.
 
-The release has two scripted stages:
+The release has three scripted stages:
 
 1. **Synthetic Test Environment**
    - Create a scratch org.
@@ -21,6 +21,12 @@ The release has two scripted stages:
    - Analyze native Service Cloud and Agentforce data.
    - Run data health and reporting.
    - Prove the application works without synthetic/demo tooling.
+
+3. **Prod-Like Agentforce Sandbox Harness**
+   - Seed real Salesforce business records.
+   - Drive real Agentforce/Messaging conversations through a configured runtime channel.
+   - Let Salesforce create runtime source records.
+   - Sync and analyze those runtime-created records with Core.
 
 Production deployment is excluded from this release.
 
@@ -46,6 +52,7 @@ Production deployment is excluded from this release.
 | Dev | Scratch org | Source deploy | Developer-controlled | Fast iteration |
 | Synthetic Test | Scratch org | Core + Demo Harness | Synthetic | Release Step 1 |
 | Agentforce Sandbox | Existing sandbox | Core only | Native Service Cloud/Agentforce | Release Step 2 |
+| Prod-Like Agentforce Sandbox | Existing Agentforce sandbox | Core only + scripts | Real business seed plus runtime-created conversations | Release Step 3 |
 | Production | Production org | Core only | Live | Out of scope for this release |
 
 ---
@@ -208,6 +215,20 @@ MessagingSession / AgentWork / Conversation
   -> validation
   -> normalization
   -> XC_AFCC_Cost_Ledger__c
+  -> data health
+  -> reports / dashboard / case explorer
+```
+
+### Prod-Like Runtime Flow
+
+```text
+Step 3 business seed
+  -> Account / Contact / Case
+  -> configured Agentforce runtime conversation runner
+  -> Salesforce-created MessagingSession / AgentWork / Conversation records
+  -> Core native sync
+  -> XC_AFCC_Usage_Staging__c with source LIVE
+  -> XC_AFCC_Cost_Ledger__c with source LIVE
   -> data health
   -> reports / dashboard / case explorer
 ```

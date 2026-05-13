@@ -1,0 +1,33 @@
+{
+  "name": "service-intake-150",
+  "description": "Production-like sandbox conversation mix for 150 real Agentforce runtime conversations.",
+  "caseCount": 150,
+  "channelRequirement": "Agentforce Service Agent connected to Messaging, Enhanced Web Chat, Agent API, or BYOC.",
+  "distributions": {
+    "topics": {
+      "Billing question": 30,
+      "Login issue": 25,
+      "Order status": 25,
+      "Return request": 25,
+      "Subscription change": 20,
+      "Technical troubleshooting": 25
+    },
+    "expectedOutcomes": {
+      "Resolved": 95,
+      "Escalated": 25,
+      "Deferred": 20,
+      "Abandoned": 10
+    }
+  },
+  "conversationGuidance": [
+    "Customer identifies the case number or email address.",
+    "Agent asks at least one clarifying question.",
+    "Agent uses configured case action to find, update, or create a Case.",
+    "Conversation ends with a resolution, escalation, deferral, or abandoned path."
+  ],
+  "successCriteria": {
+    "minimumRuntimeConversations": 150,
+    "minimumLiveLedgerRows": 1,
+    "maximumUnallocatedUsagePercent": 25
+  }
+}

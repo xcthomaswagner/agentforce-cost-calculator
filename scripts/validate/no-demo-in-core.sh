@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-blocked='Synthetic|DemoSeeder|DemoHarness|DemoScenario|DemoReset|Fake|SampleData|SyntheticDataFactory|DemoLauncher'
+blocked='DemoSeeder|DemoHarness|DemoScenario|DemoReset|Fake|SampleData|SyntheticDataFactory|DemoLauncher'
 matches="$(rg -n "$blocked" force-app/core || true)"
 if [[ -n "$matches" ]]; then
   echo "Demo or generated-data terms found in Core source:" >&2

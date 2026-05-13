@@ -11,6 +11,7 @@
 | Guardrails | PASS | Demo Harness checks non-production, custom permission, and expiring override outside scratch orgs. |
 | Step 1 script | PASS | Creates scratch org, deploys Core and Demo Harness, seeds, validates, tests, and opens app. |
 | Step 2 script | PASS | Deploys Core only, blocks production, checks Demo Harness absence, validates readiness. |
+| Step 3 prod-like sandbox harness | PARTIAL | Script, business seed, readiness check, and runner contract are present. Needs an Agentforce-enabled sandbox and channel-specific runner execution. |
 | Apex tests | PASS PENDING ORG RUN | Tests are present; full pass requires an authenticated Salesforce org. |
 | Browser smoke test | PASS PENDING ORG RUN | Checklist is documented; execution requires a deployed org. |
 
@@ -20,4 +21,5 @@
 - The CSV importer is intentionally synchronous and fallback-only; it is not the primary native sandbox path.
 - Dashboard visuals use Lightning data tables and summary cards; richer charts can be added after acceptance.
 - Package scripts assume package records already exist in the Dev Hub.
+- Step 3 requires a configured Agentforce/Messaging runtime channel; the repo provides the harness and runner contract, not customer-specific Agentforce setup.
 - Production deployment, upgrade flows, and managed-package hardening are out of scope for this release.

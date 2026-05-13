@@ -35,6 +35,20 @@ The script must:
 11. Run data health and native readiness validation.
 12. Open the Core app.
 
+### Step 3: Prod-Like Agentforce Sandbox Harness
+
+Step 3 is the preferred way to create production-like validation data in a sandbox.
+
+It seeds real `Account`, `Contact`, and `Case` records, then drives the configured Agentforce runtime through a channel-specific conversation runner. Salesforce must create the runtime conversation/work records. The harness must not directly insert `MessagingSession`, `Conversation`, or `AgentWork` records.
+
+The script is:
+
+```bash
+scripts/mvp/03-run-prod-like-agentforce-sandbox.sh --target-org agentforce-sandbox --case-count 150
+```
+
+Add `--conversation-runner <path>` after the sandbox's Agentforce channel is configured.
+
 ## 3. Native Source Model
 
 Core must use dynamic object discovery so it can deploy in scratch orgs without optional Service Cloud/Agentforce objects.
@@ -50,6 +64,8 @@ Preferred native sources:
 | 5 | Conversation Data API | Future transcript/event detail source, not required for Core because it is not SOQL-native. |
 
 Core may materialize normalized records into `XC_AFCC_Usage_Staging__c` and `XC_AFCC_Cost_Ledger__c`, but the source system must be marked `LIVE` and the calculation basis must communicate whether the value is actual, allocated, or estimated.
+
+Step 3 must use the same native source model after the runtime conversations complete.
 
 ## 4. Native Readiness States
 
