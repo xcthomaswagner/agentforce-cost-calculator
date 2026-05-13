@@ -121,10 +121,10 @@ Expected:
 - Core deploys.
 - Demo Harness is absent.
 - Synthetic data is absent.
-- CSV import is available.
+- Native Service Cloud and Agentforce source discovery runs.
 - Data health runs.
 - App opens.
-- If no usage data exists, script reports `READY_FOR_IMPORT`.
+- If native source objects exist but no usage data exists, script reports `READY_FOR_NATIVE_DATA`.
 
 ---
 
@@ -192,5 +192,5 @@ Step 2 passes only when:
 - Core deploys to sandbox
 - Demo Harness is absent
 - synthetic records are absent
-- CSV import and data health work
-- app is ready for usage import or analysis
+- native source discovery and data health work
+- app is ready for native usage analysis, or reports that native usage data is not available yet

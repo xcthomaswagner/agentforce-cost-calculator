@@ -33,6 +33,6 @@ export default class XcAfccAdminSettings extends LightningElement {
   }
 
   get csvStatus() {
-    return this.state && this.state.csvImportAvailable ? 'Available' : 'Unavailable';
+    return this.state && this.state.csvImportAvailable ? 'Fallback Enabled' : 'Fallback Disabled';
   }
 }

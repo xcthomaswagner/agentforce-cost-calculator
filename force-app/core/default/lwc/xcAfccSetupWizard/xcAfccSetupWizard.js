@@ -4,16 +4,15 @@ import getSetupState from '@salesforce/apex/XC_AFCC_SetupController.getSetupStat
 import getSummary from '@salesforce/apex/XC_AFCC_DashboardController.getSummary';
 import getLatestSummary from '@salesforce/apex/XC_AFCC_DataHealthService.getLatestSummary';
 import runDataHealth from '@salesforce/apex/XC_AFCC_DataHealthService.runDataHealth';
-import importCsv from '@salesforce/apex/XC_AFCC_CsvImportService.importCsv';
-
-const CSV_HEADER = 'source_record_id,billing_model,usage_timestamp,case_number,conversation_id,agent_name,action_name,topic,channel,queue_name,credits_used,conversations_used,action_count,case_outcome\n';
+import getNativeReadiness from '@salesforce/apex/XC_AFCC_NativeUsageService.getReadiness';
+import syncNativeUsage from '@salesforce/apex/XC_AFCC_NativeUsageService.syncNativeUsage';
 
 export default class XcAfccSetupWizard extends LightningElement {
   state;
   summary;
   health;
-  importResult;
-  csvBody = CSV_HEADER;
+  nativeReadiness;
+  nativeSyncResult;
   busy = false;
   error;
 
@@ -30,16 +29,24 @@ export default class XcAfccSetupWizard extends LightningElement {
     { label: 'Cost', fieldName: 'allocatedCost', type: 'currency' }
   ];
 
+  sourceColumns = [
+    { label: 'Source', fieldName: 'apiName' },
+    { label: 'Available', fieldName: 'available', type: 'boolean' },
+    { label: 'Accessible', fieldName: 'accessible', type: 'boolean' },
+    { label: 'Rows', fieldName: 'rowCount', type: 'number' }
+  ];
+
   connectedCallback() {
     this.load();
   }
 
   async load() {
     await this.run(async () => {
-      const [state, summary, health] = await Promise.all([getSetupState(), getSummary(), getLatestSummary()]);
+      const [state, summary, health, nativeReadiness] = await Promise.all([getSetupState(), getSummary(), getLatestSummary(), getNativeReadiness()]);
       this.state = state;
       this.summary = summary;
       this.health = health;
+      this.nativeReadiness = nativeReadiness;
     });
   }
 
@@ -50,16 +57,13 @@ export default class XcAfccSetupWizard extends LightningElement {
     });
   }
 
-  bodyChanged(event) {
-    this.csvBody = event.detail.value;
-  }
-
-  async importData() {
+  async syncNative() {
     await this.run(async () => {
-      this.importResult = await importCsv({ fileName: 'usage-import.csv', csvBody: this.csvBody });
-      const [summary, health] = await Promise.all([getSummary(), getLatestSummary()]);
+      this.nativeSyncResult = await syncNativeUsage();
+      const [summary, health, nativeReadiness] = await Promise.all([getSummary(), getLatestSummary(), getNativeReadiness()]);
       this.summary = summary;
       this.health = health;
+      this.nativeReadiness = nativeReadiness;
     });
   }
 
@@ -91,7 +95,7 @@ export default class XcAfccSetupWizard extends LightningElement {
   }
 
   get csvStatus() {
-    return this.state && this.state.csvImportAvailable ? 'Available' : 'Unavailable';
+    return this.state && this.state.csvImportAvailable ? 'Fallback Enabled' : 'Fallback Disabled';
   }
 
   get orgType() {
@@ -111,7 +115,7 @@ export default class XcAfccSetupWizard extends LightningElement {
     if (result === 'PASS') {
       return 'status-badge pass';
     }
-    if (result === 'WARN' || result === 'READY_FOR_IMPORT') {
+    if (result === 'WARN' || result === 'READY_FOR_NATIVE_DATA' || result === 'NATIVE_READY' || result === 'MISSING_NATIVE_SOURCE') {
       return 'status-badge warn';
     }
     if (result === 'FAIL') {
@@ -122,5 +126,40 @@ export default class XcAfccSetupWizard extends LightningElement {
 
   get hasUsage() {
     return this.summary && this.summary.ledgerRows > 0;
+  }
+
+  get nativeResult() {
+    return this.nativeReadiness && this.nativeReadiness.result ? this.nativeReadiness.result : 'Not Checked';
+  }
+
+  get nativeBadgeClass() {
+    const result = this.nativeResult;
+    if (result === 'ANALYSIS_READY') {
+      return 'status-badge pass';
+    }
+    if (result === 'NATIVE_READY' || result === 'READY_FOR_NATIVE_DATA') {
+      return 'status-badge warn';
+    }
+    if (result === 'MISSING_NATIVE_SOURCE' || result === 'MISSING_SERVICE_CLOUD_DATA') {
+      return 'status-badge fail';
+    }
+    return 'status-badge neutral';
+  }
+
+  get nativeSources() {
+    const sources = this.nativeReadiness && this.nativeReadiness.sources ? this.nativeReadiness.sources : [];
+    return sources.map((source) => ({
+      ...source,
+      availableLabel: source.available ? 'Yes' : 'No',
+      accessibleLabel: source.accessible ? 'Yes' : 'No'
+    }));
+  }
+
+  get nativeMessages() {
+    return this.nativeReadiness && this.nativeReadiness.messages ? this.nativeReadiness.messages : [];
+  }
+
+  get hasNativeMessages() {
+    return this.nativeMessages.length > 0;
   }
 }

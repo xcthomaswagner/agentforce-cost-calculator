@@ -1,5 +1,7 @@
 # MVP Execution Spec — XC Agentforce Cost Calculator
 
+> Superseded for Step 2 by `MVP_EXECUTION_SPEC_V2.md`. V1 incorrectly treated CSV import as the primary Agentforce sandbox path. CSV is now fallback only; native Agentforce/Service Cloud source discovery is the primary Step 2 path.
+
 ## 1. Product Goal
 
 Build a Salesforce-native application that calculates and explains Agentforce-related service cost by Case, Queue, Agent, Topic, Channel, Outcome, and time period.
@@ -16,7 +18,7 @@ The MVP has two scripted stages:
 2. **Agentforce Sandbox Without Synthetic Data**
    - Bootstrap an existing Agentforce-enabled sandbox.
    - Deploy Core only.
-   - Import real/exported usage data.
+   - Analyze native Service Cloud and Agentforce data.
    - Run data health and reporting.
    - Prove the application works without synthetic/demo tooling.
 
@@ -43,7 +45,7 @@ Production deployment is excluded from the MVP.
 |---|---|---|---|---|
 | Dev | Scratch org | Source deploy | Developer-controlled | Fast iteration |
 | Synthetic Test | Scratch org | Core + Demo Harness | Synthetic | MVP Step 1 |
-| Agentforce Sandbox | Existing sandbox | Core only | Imported/real | MVP Step 2 |
+| Agentforce Sandbox | Existing sandbox | Core only | Native Service Cloud/Agentforce | MVP Step 2 |
 | Production | Production org | Core only | Live | Out of scope for MVP |
 
 ---
@@ -74,7 +76,8 @@ The Demo Harness must not be required for Core functionality.
   - contract credit rate
   - contract conversation rate
   - fallback/default rates
-- Import usage records via CSV.
+- Discover and sync native Service Cloud/Agentforce usage records.
+- Keep CSV import as an explicit fallback only.
 - Stage raw usage records.
 - Normalize usage into ledger rows.
 - Link usage to Cases where possible.
@@ -153,7 +156,7 @@ Suggested Question: What did deferred cases cost by queue last month?
 
 ### Goal
 
-A developer runs one command against an existing sandbox and the Core app is ready for imported/real usage analysis.
+A developer runs one command against an existing sandbox and the Core app is ready for native Service Cloud/Agentforce usage analysis.
 
 ### Primary Script
 
@@ -171,10 +174,11 @@ The script must:
 4. Verify Demo Harness is absent.
 5. Assign Core admin permission.
 6. Create default configuration if missing.
-7. Confirm CSV import exists.
-8. Run data health.
-9. Open the app.
-10. Print readiness state.
+7. Discover native Service Cloud/Agentforce source objects.
+8. Sync/analyze native source rows.
+9. Run data health.
+10. Open the app.
+11. Print readiness state.
 
 ### Possible Output
 
@@ -187,18 +191,18 @@ Sandbox Analysis Ready: YES
 If usage data does not exist yet:
 
 ```text
-Sandbox Ready for Data Import: YES
-Analysis Ready: NO - Usage data not imported yet
+Native Source Ready: NO
+Analysis Ready: NO - Native Agentforce/Service Cloud data not available yet
 ```
 
 ---
 
 ## 8. Data Flow
 
-### CSV / Usage Import Flow
+### Native Usage Flow
 
 ```text
-CSV file
+MessagingSession / AgentWork / Conversation
   -> XC_AFCC_Import_Run__c
   -> XC_AFCC_Usage_Staging__c
   -> validation
@@ -267,7 +271,7 @@ Data Health must check:
 - rates configured or defaulted
 - staging rows exist
 - ledger rows exist
-- imported rows reconcile to ledger rows
+- live/imported rows reconcile to ledger rows
 - case linkage percentage
 - unallocated usage percentage
 - deferred cases found

@@ -1,11 +1,11 @@
 <template>
-  <lightning-card title="XC AFCC CSV Importer" icon-name="utility:upload">
+  <lightning-card title="XC AFCC CSV Fallback Importer" icon-name="utility:upload">
     <div class="workspace">
       <section class="section">
         <div class="section-header">
           <div>
-            <h2>Usage CSV Import</h2>
-            <p>Paste exported Agentforce usage data using the expected column headers. Imported rows are staged and converted into cost ledger rows.</p>
+            <h2>Fallback CSV Import</h2>
+            <p>Use only when native Salesforce source discovery is unavailable. Native Service Cloud and Agentforce analysis is the primary path.</p>
           </div>
           <a href="/lightning/n/XC_AFCC_Setup">Back to Setup</a>
         </div>
@@ -13,7 +13,7 @@
         <lightning-textarea label="CSV Usage Data" value={csvBody} onchange={bodyChanged} disabled={busy} class="csv-input"></lightning-textarea>
 
         <div class="button-row">
-          <lightning-button variant="brand" label="Import CSV" onclick={importData} disabled={busy}></lightning-button>
+          <lightning-button variant="brand" label="Import CSV Fallback" onclick={importData} disabled={busy}></lightning-button>
         </div>
 
         <template if:true={result}>

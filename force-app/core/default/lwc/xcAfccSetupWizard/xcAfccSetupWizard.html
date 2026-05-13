@@ -9,7 +9,7 @@
         <div class="section-header">
           <div>
             <h2>Org Setup</h2>
-            <p>Confirm the calculator is configured before importing usage data.</p>
+            <p>Confirm the calculator is configured before analyzing native Salesforce data.</p>
           </div>
           <lightning-button variant="brand-outline" label="Create Default Config" onclick={ensure} disabled={busy}></lightning-button>
         </div>
@@ -21,7 +21,7 @@
               <dd>{configStatus}</dd>
             </div>
             <div>
-              <dt>CSV Import</dt>
+              <dt>CSV Fallback</dt>
               <dd>{csvStatus}</dd>
             </div>
             <div>
@@ -39,44 +39,92 @@
       <section class="section">
         <div class="section-header">
           <div>
-            <h2>Import Usage</h2>
-            <p>Paste Agentforce usage CSV data. Detailed import history remains available on the CSV Importer tab.</p>
+            <h2>Native Source Discovery</h2>
+            <p>Check Service Cloud and Agentforce source objects, then sync live usage into the cost ledger.</p>
           </div>
-          <a href="/lightning/n/XC_AFCC_CSV_Importer">Open CSV Importer</a>
+          <span class={nativeBadgeClass}>{nativeResult}</span>
         </div>
 
-        <lightning-textarea
-          label="CSV Usage Data"
-          value={csvBody}
-          onchange={bodyChanged}
-          disabled={busy}
-          class="csv-input">
-        </lightning-textarea>
+        <template if:true={nativeReadiness}>
+          <dl class="metrics compact">
+            <div>
+              <dt>Cases</dt>
+              <dd>{nativeReadiness.caseCount}</dd>
+            </div>
+            <div>
+              <dt>Accounts</dt>
+              <dd>{nativeReadiness.accountCount}</dd>
+            </div>
+            <div>
+              <dt>Contacts</dt>
+              <dd>{nativeReadiness.contactCount}</dd>
+            </div>
+            <div>
+              <dt>Native Source Rows</dt>
+              <dd>{nativeReadiness.nativeSourceRows}</dd>
+            </div>
+            <div>
+              <dt>Live Ledger Rows</dt>
+              <dd>{nativeReadiness.liveLedgerRows}</dd>
+            </div>
+          </dl>
+
+          <div class="table-wrap">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered source-status-table">
+              <thead>
+                <tr>
+                  <th scope="col">Source</th>
+                  <th scope="col">Available</th>
+                  <th scope="col">Accessible</th>
+                  <th scope="col">Rows</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template for:each={nativeSources} for:item="source">
+                  <tr key={source.apiName}>
+                    <th scope="row">{source.apiName}</th>
+                    <td>{source.availableLabel}</td>
+                    <td>{source.accessibleLabel}</td>
+                    <td>{source.rowCount}</td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </template>
 
         <div class="button-row">
-          <lightning-button variant="brand" label="Import CSV" onclick={importData} disabled={busy}></lightning-button>
+          <lightning-button variant="brand" label="Sync Native Usage" onclick={syncNative} disabled={busy}></lightning-button>
+          <a href="/lightning/n/XC_AFCC_CSV_Importer">Open CSV Fallback</a>
         </div>
 
-        <template if:true={importResult}>
+        <template if:true={nativeSyncResult}>
           <dl class="metrics compact">
             <div>
               <dt>Status</dt>
-              <dd>{importResult.status}</dd>
+              <dd>{nativeSyncResult.status}</dd>
             </div>
             <div>
-              <dt>Rows</dt>
-              <dd>{importResult.rowCount}</dd>
+              <dt>Source Rows</dt>
+              <dd>{nativeSyncResult.sourceRows}</dd>
             </div>
             <div>
-              <dt>Imported</dt>
-              <dd>{importResult.successCount}</dd>
+              <dt>Staged</dt>
+              <dd>{nativeSyncResult.stagedRows}</dd>
             </div>
             <div>
               <dt>Errors</dt>
-              <dd>{importResult.errorCount}</dd>
+              <dd>{nativeSyncResult.errorRows}</dd>
             </div>
           </dl>
-          <p class="result-message">{importResult.message}</p>
+        </template>
+
+        <template if:true={hasNativeMessages}>
+          <div class="empty-state">
+            <template for:each={nativeMessages} for:item="message">
+              <span key={message}>{message}</span>
+            </template>
+          </div>
         </template>
       </section>
 
@@ -113,7 +161,9 @@
               <dd>{health.unallocatedUsagePercent}</dd>
             </div>
           </dl>
-          <lightning-datatable key-field="name" data={health.checks} columns={healthColumns} hide-checkbox-column></lightning-datatable>
+          <div class="table-wrap">
+            <lightning-datatable key-field="name" data={health.checks} columns={healthColumns} hide-checkbox-column></lightning-datatable>
+          </div>
         </template>
       </section>
 
@@ -153,12 +203,14 @@
           </dl>
 
           <template if:true={hasUsage}>
+          <div class="table-wrap">
             <lightning-datatable key-field="groupValue" data={summary.costByQueue} columns={queueColumns} hide-checkbox-column></lightning-datatable>
+          </div>
           </template>
           <template if:false={hasUsage}>
             <div class="empty-state">
-              <strong>Ready for data import.</strong>
-              <span>Import usage data to activate dashboard totals, grouped reports, and case explanations.</span>
+              <strong>Ready for native analysis.</strong>
+              <span>Sync native Service Cloud or Agentforce records to activate dashboard totals, grouped reports, and case explanations.</span>
             </div>
           </template>
         </template>

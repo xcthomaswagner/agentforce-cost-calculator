@@ -1,12 +1,18 @@
 # CSV Import Contract
 
-## 1. Purpose
+## 1. Status
 
-The CSV import contract is the bridge for MVP Step 2. It lets the Core app ingest usage data from an Agentforce sandbox without requiring a direct Digital Wallet connector.
+Deprecated for the primary MVP Step 2 flow. CSV import is now a fallback/admin utility only.
+
+Use `MVP_EXECUTION_SPEC_V2.md` and `NATIVE_AGENTFORCE_SOURCE_SPEC.md` as the authority for native Agentforce sandbox analysis.
+
+## 2. Purpose
+
+The CSV import contract lets the Core app ingest customer-provided exported usage data when native Salesforce source discovery cannot be used. It must not be presented as the primary Agentforce sandbox path.
 
 ---
 
-## 2. Required CSV Columns
+## 3. Required CSV Columns
 
 | Column | Required | Description |
 |---|---:|---|
@@ -31,7 +37,7 @@ The CSV import contract is the bridge for MVP Step 2. It lets the Core app inges
 
 ---
 
-## 3. Validation Rules
+## 4. Validation Rules
 
 - `external_usage_id` must be unique per import/source.
 - `billing_model` must be supported.
@@ -44,7 +50,7 @@ The CSV import contract is the bridge for MVP Step 2. It lets the Core app inges
 
 ---
 
-## 4. Example: Flex Credit
+## 5. Example: Flex Credit
 
 ```csv
 external_usage_id,billing_model,usage_timestamp,case_number,conversation_id,agent_name,action_name,credits_used,channel,topic,queue_name,case_outcome,calculation_basis
@@ -53,7 +59,7 @@ u-001,FLEX_CREDITS,2026-05-01T10:00:00Z,00010001,c-001,Service Agent A,Classify 
 
 ---
 
-## 5. Example: Conversation Pricing
+## 6. Example: Conversation Pricing
 
 ```csv
 external_usage_id,billing_model,usage_timestamp,case_number,conversation_id,agent_name,conversations_used,channel,topic,queue_name,case_outcome,calculation_basis

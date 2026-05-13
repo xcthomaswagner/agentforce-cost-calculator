@@ -113,3 +113,12 @@
   padding: 1rem;
   background: #fafaf9;
 }
+
+.table-wrap {
+  min-height: 0;
+  margin-bottom: 1rem;
+}
+
+.source-status-table {
+  table-layout: fixed;
+}

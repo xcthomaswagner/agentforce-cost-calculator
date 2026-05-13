@@ -1,6 +1,9 @@
 # Codex Goal Prompt
 
-Use the following as the Goal prompt in Codex.
+> V2 correction: this original prompt is superseded for the Agentforce sandbox flow by `MVP_EXECUTION_SPEC_V2.md` and `NATIVE_AGENTFORCE_SOURCE_SPEC.md`.
+> CSV import is fallback-only. Step 2 must analyze native Service Cloud/Agentforce data when those objects and rows exist.
+
+Use the following as historical context only unless the V2 specs say otherwise.
 
 ---
 
@@ -29,8 +32,8 @@ The MVP is complete when both scripted flows work end-to-end:
    - A developer runs one script against an existing Agentforce-enabled sandbox.
    - The script deploys Core only.
    - The demo harness and synthetic generator are absent.
-   - CSV import is available.
-   - The app can analyze imported/real usage data.
+   - Native Service Cloud and Agentforce source discovery is available.
+   - The app can analyze live org usage data.
    - Data health, report builder, dashboard, and case explorer work without synthetic data.
 
 Production deployment is out of scope for this MVP.
@@ -162,7 +165,7 @@ Demo Harness includes:
 - Demo seeder
 - Demo reset
 - Demo readiness validator
-- Demo launcher LWC
+- Synthetic data generator LWC
 - Synthetic data generator LWC
 - Internal demo permission set
 - Custom permission gate
@@ -238,10 +241,11 @@ The script must:
 4. Confirm Demo Harness metadata is not present.
 5. Assign `XC_AFCC_Admin`.
 6. Create default org config if missing.
-7. Confirm CSV import is available.
-8. Run data health.
-9. Run sandbox readiness validation.
-10. Open the Salesforce app.
+7. Discover native Service Cloud and Agentforce source objects.
+8. Sync native usage into the cost ledger when source rows exist.
+9. Run data health.
+10. Run sandbox readiness validation.
+11. Open the Salesforce app.
 
 Support options:
 
@@ -249,15 +253,15 @@ Support options:
 --target-org <alias>
 --deploy-source
 --install-package
---csv <path>
+--csv <path> # fallback only
 --validate-only
 ```
 
-If no usage data exists, the script should report:
+If native usage source objects exist but no usage data exists, the script should report:
 
 ```text
-Sandbox Ready for Data Import: YES
-Analysis Ready: NO - Usage data not imported yet
+Native Source Ready: YES
+Analysis Ready: NO - Native Agentforce usage data not available yet
 ```
 
 ---
@@ -403,11 +407,11 @@ Step 2 is done when:
 - one command bootstraps an Agentforce sandbox with Core only
 - no synthetic data is present
 - no demo harness assets are present
-- CSV import works
+- native Service Cloud and Agentforce source discovery works
 - data health runs
-- ledger can be populated from import
-- reports and case explorer work from imported data
-- readiness validator returns PASS or READY_FOR_IMPORT when no usage data exists
+- ledger can be populated from native source rows
+- reports and case explorer work from live/native data
+- readiness validator returns PASS, NATIVE_READY, or READY_FOR_NATIVE_DATA when usage data does not exist yet
 
 ---
 

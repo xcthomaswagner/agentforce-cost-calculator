@@ -29,7 +29,7 @@ public with sharing class XC_AFCC_SetupController {
         config.XC_AFCC_Default_Credit_Rate__c = 0.005;
         config.XC_AFCC_Default_Conversation_Rate__c = 2.00;
         config.XC_AFCC_Allocation_Method__c = 'PRIMARY_CASE';
-        config.XC_AFCC_Csv_Import_Enabled__c = true;
+        config.XC_AFCC_Csv_Import_Enabled__c = false;
         insert config;
         XC_AFCC_AuditLogService.log('DEFAULT_CONFIG_CREATED', null, JSON.serialize(config), 'Default configuration created.');
         return config;
@@ -40,7 +40,8 @@ public with sharing class XC_AFCC_SetupController {
         Map<String, Object> state = new Map<String, Object>();
         state.put('environment', XC_AFCC_EnvironmentService.getEnvironmentInfo());
         state.put('configCount', [SELECT COUNT() FROM XC_AFCC_Org_Config__c]);
-        state.put('csvImportAvailable', true);
+        state.put('csvImportAvailable', false);
+        state.put('csvImportFallbackOnly', true);
         return state;
     }
 }

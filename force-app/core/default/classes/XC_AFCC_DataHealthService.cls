@@ -37,14 +37,15 @@ public with sharing class XC_AFCC_DataHealthService {
     public static HealthSummary validateSandboxReadiness() {
         XC_AFCC_SetupController.ensureDefaultConfig();
         HealthSummary summary = calculate();
+        XC_AFCC_NativeUsageService.NativeReadiness readiness = XC_AFCC_NativeUsageService.getReadiness();
+        summary.checks.add(new CheckResult('Native Source Readiness', readiness.result == 'MISSING_NATIVE_SOURCE' ? 'WARN' : 'PASS', readiness.result, readiness.nativeSourceRows));
         if (summary.ledgerRows == 0) {
-            summary.result = 'READY_FOR_IMPORT';
-            summary.checks.add(new CheckResult('Sandbox Ready for Data Import', 'PASS', 'YES', 1));
-            summary.checks.add(new CheckResult('Analysis Ready', 'WARN', 'NO - Usage data not imported yet', 0));
+            summary.result = readiness.result;
+            summary.checks.add(new CheckResult('Analysis Ready', 'WARN', 'NO - Native Agentforce/Service Cloud data has not been synced yet', 0));
         } else if (summary.result == 'PASS' || summary.result == 'WARN') {
             summary.checks.add(new CheckResult('Analysis Ready', 'PASS', 'Usage data is available.', 1));
         }
-        persist(summary, 'IMPORTED');
+        persist(summary, 'LIVE');
         return summary;
     }
 
@@ -101,7 +102,7 @@ public with sharing class XC_AFCC_DataHealthService {
             row.XC_AFCC_Record_Count__c = check.value;
             row.XC_AFCC_Warning_Level__c = check.status == 'FAIL' ? 'HIGH' : (check.status == 'WARN' ? 'MEDIUM' : 'NONE');
             row.XC_AFCC_Run_Timestamp__c = System.now();
-            row.XC_AFCC_Data_Set_Type__c = dataSetType == 'IMPORTED' ? 'IMPORTED' : null;
+            row.XC_AFCC_Data_Set_Type__c = dataSetType == 'IMPORTED' || dataSetType == 'LIVE' || dataSetType == 'SYNTHETIC' ? dataSetType : null;
             rows.add(row);
         }
         if (!rows.isEmpty()) {

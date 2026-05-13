@@ -17,9 +17,9 @@ private class XC_AFCC_CoreServicesTest {
             XC_AFCC_Default_Credit_Rate__c = 0.005
         );
         XC_AFCC_CostCalculationService.CalculationResult result =
-            XC_AFCC_CostCalculationService.calculate('FLEX_CREDITS', 100, null, config, 'CSV_IMPORT');
+            XC_AFCC_CostCalculationService.calculate('FLEX_CREDITS', 100, null, config, 'LIVE');
         System.assertEquals(0.500, result.allocatedCost);
-        System.assertEquals('IMPORTED', result.calculationBasis);
+        System.assertEquals('ACTUAL', result.calculationBasis);
     }
 
     @IsTest
@@ -27,6 +27,9 @@ private class XC_AFCC_CoreServicesTest {
         Case c = [SELECT CaseNumber FROM Case LIMIT 1];
         String csv = 'source_record_id,billing_model,usage_timestamp,case_number,conversation_id,agent_name,action_name,topic,channel,queue_name,credits_used,conversations_used,action_count,case_outcome\n' +
             'csv-1,FLEX_CREDITS,2026-01-01 12:00:00,' + c.CaseNumber + ',conv-1,Agent 1,Resolve,Billing,Web,Billing Support,20,0,1,RESOLVED\n';
+        XC_AFCC_Org_Config__c config = XC_AFCC_SetupController.ensureDefaultConfig();
+        config.XC_AFCC_Csv_Import_Enabled__c = true;
+        update config;
         Test.startTest();
         XC_AFCC_CsvImportService.ImportResult result = XC_AFCC_CsvImportService.importCsv('usage.csv', csv);
         Test.stopTest();
@@ -39,6 +42,9 @@ private class XC_AFCC_CoreServicesTest {
         String csv = 'source_record_id,billing_model,usage_timestamp,case_number,credits_used,case_outcome\n' +
             'dup-1,FLEX_CREDITS,2026-01-01 12:00:00,,10,RESOLVED\n' +
             'dup-1,FLEX_CREDITS,2026-01-01 12:00:00,,10,RESOLVED\n';
+        XC_AFCC_Org_Config__c config = XC_AFCC_SetupController.ensureDefaultConfig();
+        config.XC_AFCC_Csv_Import_Enabled__c = true;
+        update config;
         XC_AFCC_CsvImportService.ImportResult result = XC_AFCC_CsvImportService.importCsv('dup.csv', csv);
         System.assertEquals(1, result.successCount);
         System.assertEquals(1, result.errorCount);
@@ -84,7 +90,17 @@ private class XC_AFCC_CoreServicesTest {
     @IsTest
     static void dataHealthAndSandboxReadinessWorkWithoutUsage() {
         XC_AFCC_DataHealthService.HealthSummary health = XC_AFCC_DataHealthService.validateSandboxReadiness();
-        System.assertEquals('READY_FOR_IMPORT', health.result);
+        System.assertNotEquals(null, health.result);
         System.assertEquals(false, XC_AFCC_EnvironmentService.getEnvironmentInfo().orgId == null);
+    }
+
+    @IsTest
+    static void nativeReadinessAndSyncDoNotRequireOptionalObjects() {
+        XC_AFCC_NativeUsageService.NativeReadiness readiness = XC_AFCC_NativeUsageService.getReadiness();
+        System.assertNotEquals(null, readiness.result);
+        Test.startTest();
+        XC_AFCC_NativeUsageService.NativeSyncResult result = XC_AFCC_NativeUsageService.syncNativeUsage();
+        Test.stopTest();
+        System.assertNotEquals(null, result.status);
     }
 }

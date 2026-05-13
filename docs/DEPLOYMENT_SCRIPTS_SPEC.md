@@ -57,7 +57,7 @@ Required steps:
 
 ### 2.2 `scripts/mvp/02-bootstrap-agentforce-sandbox.sh`
 
-Purpose: deploy Core only to an existing sandbox and prepare for imported/real usage.
+Purpose: deploy Core only to an existing sandbox and prepare for native Agentforce/Service Cloud analysis.
 
 Usage:
 
@@ -72,7 +72,7 @@ Options:
 | `--target-org` | Yes | target sandbox alias |
 | `--deploy-source` | No | deploy Core source |
 | `--install-package` | No | install Core package version |
-| `--csv` | No | import CSV after deploy |
+| `--csv` | No | fallback-only CSV import after deploy |
 | `--validate-only` | No | validate only |
 | `--skip-open` | No | do not open browser |
 
@@ -84,10 +84,12 @@ Required steps:
 4. Confirm Demo Harness is not deployed.
 5. Assign `XC_AFCC_Admin`.
 6. Create or validate org config.
-7. Import CSV if provided.
-8. Run data health.
-9. Run sandbox readiness validation.
-10. Open org unless skipped.
+7. Discover native Service Cloud/Agentforce source objects.
+8. Sync/analyze native source rows unless validate-only.
+9. Import CSV only if explicitly provided as fallback.
+10. Run data health.
+11. Run sandbox readiness validation.
+12. Open org unless skipped.
 
 ---
 

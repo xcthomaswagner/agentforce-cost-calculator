@@ -56,7 +56,29 @@ if [[ "$VALIDATE_ONLY" != "true" ]]; then
   sf apex run --target-org "$TARGET_ORG" --file scripts/apex/validateSandboxReadiness.apex >/dev/null
 fi
 
+count_object() {
+  local object_name="$1"
+  if sf sobject describe --target-org "$TARGET_ORG" --sobject "$object_name" --json >/dev/null 2>&1; then
+    sf data query --target-org "$TARGET_ORG" --json --query "SELECT COUNT() FROM $object_name" | jq -r '.result.totalSize'
+  else
+    echo "0"
+  fi
+}
+
+account_count="$(count_object Account)"
+contact_count="$(count_object Contact)"
+case_count="$(count_object Case)"
+messaging_session_count="$(count_object MessagingSession)"
+agent_work_count="$(count_object AgentWork)"
+conversation_count="$(count_object Conversation)"
+native_source_count=$((messaging_session_count + agent_work_count + conversation_count))
+
+if [[ "$VALIDATE_ONLY" != "true" ]]; then
+  sf apex run --target-org "$TARGET_ORG" --file scripts/apex/syncNativeUsage.apex >/dev/null || true
+fi
+
 if [[ -n "$CSV_PATH" ]]; then
+  echo "CSV fallback requested explicitly. Native Salesforce source analysis remains the primary path."
   if [[ ! -f "$CSV_PATH" ]]; then
     echo "CSV file not found: $CSV_PATH" >&2
     exit 1
@@ -64,6 +86,9 @@ if [[ -n "$CSV_PATH" ]]; then
   encoded="$(base64 < "$CSV_PATH" | tr -d '\n')"
   tmp_csv="$(mktemp)"
   cat > "$tmp_csv" <<EOF
+XC_AFCC_Org_Config__c config = XC_AFCC_SetupController.ensureDefaultConfig();
+config.XC_AFCC_Csv_Import_Enabled__c = true;
+update config;
 String csvBody = EncodingUtil.base64Decode('$encoded').toString();
 System.debug(JSON.serializePretty(XC_AFCC_CsvImportService.importCsv('$CSV_PATH', csvBody)));
 EOF
@@ -74,13 +99,19 @@ fi
 sf apex run --target-org "$TARGET_ORG" --file scripts/apex/runDataHealth.apex >/dev/null
 sandbox_output="$(sf apex run --target-org "$TARGET_ORG" --file scripts/apex/validateSandboxReadiness.apex 2>&1 || true)"
 ledger_count="$(sf data query --target-org "$TARGET_ORG" --json --query "SELECT COUNT() FROM XC_AFCC_Cost_Ledger__c" | jq -r '.result.totalSize')"
-csv_available="YES"
-if [[ "$ledger_count" == "0" ]]; then
-  analysis_ready="NO - Usage data not imported yet"
-  readiness="READY_FOR_IMPORT"
+live_ledger_count="$(sf data query --target-org "$TARGET_ORG" --json --query "SELECT COUNT() FROM XC_AFCC_Cost_Ledger__c WHERE XC_AFCC_Source_System__c = 'LIVE'" | jq -r '.result.totalSize')"
+if [[ "$native_source_count" == "0" ]]; then
+  native_ready="NO - Supported native source objects or rows not found"
+  analysis_ready="NO - Native Agentforce/Service Cloud data not available yet"
+  readiness="MISSING_NATIVE_SOURCE"
+elif [[ "$live_ledger_count" == "0" ]]; then
+  native_ready="YES"
+  analysis_ready="NO - Native source rows not synced into ledger yet"
+  readiness="NATIVE_READY"
 else
+  native_ready="YES"
   analysis_ready="YES"
-  readiness="PASS"
+  readiness="ANALYSIS_READY"
 fi
 app_url="$(sf org open --target-org "$TARGET_ORG" --path lightning/n/XC_AFCC_Cost_Dashboard --url-only --json | jq -r '.result.url // empty')"
 
@@ -96,10 +127,17 @@ Target Org: $TARGET_ORG
 Org Type: $org_type
 Core Only: PASS
 Demo Harness Present: NO
-CSV Import Available: $csv_available
-Sandbox Ready for Data Import: YES
+Account Rows: $account_count
+Contact Rows: $contact_count
+Case Rows: $case_count
+MessagingSession Rows: $messaging_session_count
+AgentWork Rows: $agent_work_count
+Conversation Rows: $conversation_count
+Native Source Ready: $native_ready
 Analysis Ready: $analysis_ready
 Ledger Row Count: $ledger_count
+Live Ledger Row Count: $live_ledger_count
+CSV Fallback: explicit --csv only
 App URL: $app_url
 Readiness Validator: $readiness
 

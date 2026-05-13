@@ -36,7 +36,7 @@ export default class XcAfccDataHealth extends LightningElement {
     if (this.resultLabel === 'PASS') {
       return 'status-badge pass';
     }
-    if (this.resultLabel === 'WARN' || this.resultLabel === 'READY_FOR_IMPORT') {
+    if (this.resultLabel === 'WARN' || this.resultLabel === 'READY_FOR_NATIVE_DATA' || this.resultLabel === 'NATIVE_READY') {
       return 'status-badge warn';
     }
     if (this.resultLabel === 'FAIL') {

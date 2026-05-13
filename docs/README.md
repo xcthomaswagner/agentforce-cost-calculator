@@ -21,8 +21,8 @@ The MVP has two sequential steps:
    - A developer runs one script against an existing Agentforce-enabled sandbox.
    - The script deploys the Core package/source only.
    - No synthetic data or demo harness is installed.
-   - The app runs against real/imported usage data.
-   - CSV import and data health prove the app works without synthetic data.
+   - The app runs against native Service Cloud and Agentforce data.
+   - Native source discovery, native sync, and data health prove the app works without synthetic data.
 
 Production deployment is explicitly **not included** in the MVP.
 
@@ -32,6 +32,8 @@ Production deployment is explicitly **not included** in the MVP.
 |---|---|
 | `CODEX_GOAL_PROMPT.md` | Copy/paste prompt for Codex Goal |
 | `MVP_EXECUTION_SPEC.md` | Full functional and technical MVP spec |
+| `MVP_EXECUTION_SPEC_V2.md` | Corrected native Agentforce/Service Cloud MVP spec |
+| `NATIVE_AGENTFORCE_SOURCE_SPEC.md` | Native object discovery and sync model |
 | `SALESFORCE_METADATA_SPEC.md` | Salesforce objects, fields, classes, LWCs, permissions |
 | `DEPLOYMENT_SCRIPTS_SPEC.md` | Required Mac/CLI scripts and expected behavior |
 | `SYNTHETIC_DATA_AND_TESTING_SPEC.md` | Synthetic scenario model, test data contracts, readiness checks |
@@ -48,5 +50,5 @@ Production deployment is explicitly **not included** in the MVP.
 5. Build deterministic synthetic data factory.
 6. Build readiness validation.
 7. Build dashboard/report/case-explorer functionality.
-8. Build CSV import and Step 2 Agentforce sandbox bootstrap.
+8. Build native Service Cloud/Agentforce source discovery and Step 2 sandbox bootstrap.
 9. Run Mac/browser smoke testing.

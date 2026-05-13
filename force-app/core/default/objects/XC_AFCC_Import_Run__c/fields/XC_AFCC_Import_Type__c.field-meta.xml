@@ -19,6 +19,11 @@
                 <label>API</label>
             </value>
             <value>
+                <fullName>NATIVE_SYNC</fullName>
+                <default>false</default>
+                <label>NATIVE_SYNC</label>
+            </value>
+            <value>
                 <fullName>MANUAL</fullName>
                 <default>false</default>
                 <label>MANUAL</label>

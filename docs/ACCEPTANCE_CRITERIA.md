@@ -75,7 +75,7 @@ Step 1 is complete when:
 
 ---
 
-## Step 2 Acceptance Criteria: Agentforce Sandbox Without Synthetic Data
+## Step 2 Acceptance Criteria: Native Agentforce Sandbox Without Synthetic Data
 
 Step 2 is complete when:
 
@@ -101,14 +101,17 @@ Step 2 is complete when:
 - [ ] Org config can be created.
 - [ ] Billing model can be configured.
 - [ ] Rate can be configured.
-- [ ] CSV import is available.
-- [ ] CSV import creates staging rows.
-- [ ] Ledger builder creates ledger rows.
+- [ ] Native Service Cloud objects are accessible: Account, Contact, Case.
+- [ ] Native Agentforce/Service Cloud source discovery runs.
+- [ ] At least one supported native source object is detected when the target org is Agentforce-enabled.
+- [ ] Native source sync creates LIVE staging rows.
+- [ ] Ledger builder creates LIVE ledger rows.
+- [ ] CSV import is labeled fallback/deprecated and is not the primary path.
 - [ ] Data health runs.
-- [ ] Dashboard/report/case explorer work after data import.
+- [ ] Dashboard/report/case explorer work after native sync.
 
 ### Readiness
 
-- [ ] If no usage data exists, script reports `READY_FOR_IMPORT`.
+- [ ] If no native source data exists, script reports `READY_FOR_NATIVE_DATA` or `MISSING_NATIVE_SOURCE`.
 - [ ] If usage data exists, script reports `ANALYSIS_READY`.
-- [ ] Sandbox readiness validator returns PASS or READY_FOR_IMPORT.
+- [ ] Sandbox readiness validator returns PASS, NATIVE_READY, or READY_FOR_NATIVE_DATA.
