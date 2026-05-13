@@ -1,1 +1,70 @@
-<template><c-xc-afcc-demo-launcher></c-xc-afcc-demo-launcher></template>
+<template>
+  <lightning-card title="XC AFCC Synthetic Data Generator">
+    <div class="slds-p-around_medium generator">
+      <section class="controls">
+        <lightning-combobox
+          label="Scenario"
+          value={scenario}
+          options={scenarioOptions}
+          onchange={scenarioChanged}>
+        </lightning-combobox>
+        <lightning-combobox
+          label="Volume"
+          value={volume}
+          options={volumeOptions}
+          onchange={volumeChanged}>
+        </lightning-combobox>
+        <div class="actions">
+          <lightning-button variant="brand" label="Generate Data" onclick={generate} disabled={busy}></lightning-button>
+          <lightning-button label="Validate" onclick={validate} disabled={busy}></lightning-button>
+          <lightning-button label="Reset Synthetic Data" onclick={reset} disabled={busy}></lightning-button>
+        </div>
+      </section>
+
+      <template if:true={error}>
+        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">{error}</div>
+      </template>
+
+      <template if:true={seedResult}>
+        <section class="panel">
+          <h2>Generated Data</h2>
+          <dl class="metrics">
+            <div><dt>Scenario</dt><dd>{seedResult.scenarioName}</dd></div>
+            <div><dt>Accounts</dt><dd>{seedResult.accounts}</dd></div>
+            <div><dt>Contacts</dt><dd>{seedResult.contacts}</dd></div>
+            <div><dt>Cases</dt><dd>{seedResult.cases}</dd></div>
+            <div><dt>Ledger Rows</dt><dd>{seedResult.ledgerRows}</dd></div>
+            <div><dt>Staging Rows</dt><dd>{seedResult.stagingRows}</dd></div>
+          </dl>
+          <div class="question">{seedResult.suggestedQuestion}</div>
+        </section>
+      </template>
+
+      <template if:true={readiness}>
+        <section class="panel">
+          <h2>Readiness</h2>
+          <div class={readinessClass}>{readiness.result}</div>
+          <dl class="metrics">
+            <div><dt>Cases</dt><dd>{readinessSummary.cases}</dd></div>
+            <div><dt>Ledger Rows</dt><dd>{readinessSummary.ledgerRows}</dd></div>
+            <div><dt>Deferred Cases</dt><dd>{readinessSummary.deferredCases}</dd></div>
+            <div><dt>Total Credits</dt><dd>{readinessSummary.totalCredits}</dd></div>
+            <div><dt>Allocated Cost</dt><dd>{readinessSummary.allocatedCost}</dd></div>
+            <div><dt>Unallocated %</dt><dd>{readinessSummary.unallocatedUsagePercent}</dd></div>
+          </dl>
+        </section>
+      </template>
+
+      <template if:true={resetResult}>
+        <section class="panel">
+          <h2>Reset Counts</h2>
+          <dl class="metrics">
+            <template for:each={resetItems} for:item="item">
+              <div key={item.name}><dt>{item.label}</dt><dd>{item.value}</dd></div>
+            </template>
+          </dl>
+        </section>
+      </template>
+    </div>
+  </lightning-card>
+</template>

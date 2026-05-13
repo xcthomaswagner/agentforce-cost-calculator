@@ -1,2 +1,80 @@
-:host { display: block; }
-.metric { font-size: 1.25rem; font-weight: 700; }
+:host {
+  display: block;
+}
+
+.generator {
+  display: grid;
+  gap: 1rem;
+}
+
+.controls {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 48rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.panel {
+  border: 1px solid #dddbda;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  background: #ffffff;
+}
+
+.panel h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.metrics div {
+  min-width: 0;
+}
+
+.metrics dt {
+  color: #5c5c5c;
+  font-size: 0.75rem;
+}
+
+.metrics dd {
+  margin: 0.125rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.question {
+  margin-top: 0.75rem;
+  color: #2e2e2e;
+  font-weight: 600;
+}
+
+.status {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-weight: 700;
+}
+
+.pass {
+  color: #194e31;
+  background: #dff6e8;
+}
+
+.fail {
+  color: #8c1d18;
+  background: #fddede;
+}
