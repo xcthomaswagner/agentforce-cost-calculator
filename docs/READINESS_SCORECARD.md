@@ -1,4 +1,4 @@
-# MVP Readiness Scorecard
+# Release Readiness Scorecard
 
 | Area | Status | Notes |
 |---|---|---|
@@ -14,10 +14,10 @@
 | Apex tests | PASS PENDING ORG RUN | Tests are present; full pass requires an authenticated Salesforce org. |
 | Browser smoke test | PASS PENDING ORG RUN | Checklist is documented; execution requires a deployed org. |
 
-## Known MVP Limitations
+## Known Release Limitations
 
 - Native Agentforce object availability varies by org configuration; Core discovers supported objects dynamically and reports gaps instead of hard failing.
-- The CSV importer is intentionally synchronous and fallback-only; it is not the primary MVP sandbox path.
+- The CSV importer is intentionally synchronous and fallback-only; it is not the primary native sandbox path.
 - Dashboard visuals use Lightning data tables and summary cards; richer charts can be added after acceptance.
 - Package scripts assume package records already exist in the Dev Hub.
-- Production deployment, upgrade flows, and managed-package hardening are out of scope for this MVP.
+- Production deployment, upgrade flows, and managed-package hardening are out of scope for this release.

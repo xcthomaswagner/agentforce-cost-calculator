@@ -121,7 +121,7 @@ fi
 
 cat <<EOF
 
-XC AFCC MVP Step 2 Readiness
+Agentforce Cost Calculator Step 2 Readiness
 
 Target Org: $TARGET_ORG
 Org Type: $org_type

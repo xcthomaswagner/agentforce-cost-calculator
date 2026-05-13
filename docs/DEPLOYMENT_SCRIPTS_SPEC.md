@@ -2,7 +2,7 @@
 
 ## 1. Design Principle
 
-The MVP must be script deployable.
+The release must be script deployable.
 
 A developer should not have to manually click through Salesforce setup to create the first synthetic test environment or bootstrap an Agentforce sandbox.
 
@@ -203,7 +203,7 @@ Every major script should end with a clear scorecard.
 Example:
 
 ```text
-XC AFCC MVP Step 1 Readiness
+Agentforce Cost Calculator Step 1 Readiness
 
 Org Alias: xc-afcc-synth-test
 Scenario: deferred-hotspot

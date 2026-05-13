@@ -1,13 +1,13 @@
 # Acceptance Criteria
 
-## MVP Definition
+## Release Definition
 
-The MVP consists of two completed steps:
+The release consists of two completed steps:
 
 1. Script-created synthetic test environment.
 2. Script-bootstrapped Agentforce sandbox without synthetic data.
 
-Production deployment is not part of the MVP.
+Production deployment is not part of this release.
 
 ---
 

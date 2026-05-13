@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-Synthetic data is the first MVP milestone. It allows XC developers to prove the complete Salesforce app without Agentforce, Omni-Channel, Messaging, or Digital Engagement.
+Synthetic data is the first release milestone. It allows XC developers to prove the complete Salesforce app without Agentforce, Omni-Channel, Messaging, or Digital Engagement.
 
 Synthetic data must be realistic enough for demos and deterministic enough for automated testing.
 

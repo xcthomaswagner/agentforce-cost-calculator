@@ -112,4 +112,4 @@
 7. Run known-answer scenario.
 8. Run Step 2 against sandbox.
 9. Validate no synthetic leakage.
-10. Produce MVP readiness scorecard.
+10. Produce release readiness scorecard.

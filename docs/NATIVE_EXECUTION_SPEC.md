@@ -1,4 +1,4 @@
-# MVP Execution Spec V2 - Native Agentforce Cost Calculator
+# Execution Spec V2 - Native Agentforce Cost Calculator
 
 ## 1. Product Correction
 
@@ -6,9 +6,9 @@ V1 incorrectly made CSV import the primary path for the Agentforce sandbox flow.
 
 The Core product is intended to run in an Agentforce-enabled Salesforce org with Service Cloud data. It should inspect and use native Salesforce records first, especially `Case`, `Account`, `Contact`, and available Agentforce/Service Cloud conversation or work objects.
 
-CSV import is deprecated as the main MVP path. It may remain as an explicit fallback/admin utility, but it must not be the primary setup experience, readiness state, acceptance criterion, or demo story for Step 2.
+CSV import is deprecated as the main path. It may remain as an explicit fallback/admin utility, but it must not be the primary setup experience, readiness state, acceptance criterion, or demo story for Step 2.
 
-## 2. MVP Stages
+## 2. Release Stages
 
 ### Step 1: Synthetic Test Environment
 
@@ -23,7 +23,7 @@ Step 2 runs Core only against an existing Agentforce-enabled sandbox or producti
 The script must:
 
 1. Confirm the target org is authenticated.
-2. Confirm the target org is not production for MVP execution.
+2. Confirm the target org is not production for release execution.
 3. Deploy or install Core only.
 4. Verify Demo Harness metadata is absent.
 5. Assign `XC_AFCC_Admin`.
@@ -46,8 +46,8 @@ Preferred native sources:
 | 1 | `MessagingSession` | Customer conversation/session anchor for Service Cloud messaging. |
 | 2 | `AgentWork` | Routed work assignment for agent/service work, often linked to a Case. |
 | 3 | `Conversation` | Conversation-level source where available. |
-| 4 | Data Cloud Agent Work DMO | Future source for larger-scale analytics, not required for Core MVP. |
-| 5 | Conversation Data API | Future transcript/event detail source, not required for Core MVP because it is not SOQL-native. |
+| 4 | Data Cloud Agent Work DMO | Future source for larger-scale analytics, not required for Core. |
+| 5 | Conversation Data API | Future transcript/event detail source, not required for Core because it is not SOQL-native. |
 
 Core may materialize normalized records into `XC_AFCC_Usage_Staging__c` and `XC_AFCC_Cost_Ledger__c`, but the source system must be marked `LIVE` and the calculation basis must communicate whether the value is actual, allocated, or estimated.
 

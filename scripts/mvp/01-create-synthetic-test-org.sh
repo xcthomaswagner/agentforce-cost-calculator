@@ -120,7 +120,7 @@ fi
 
 cat <<EOF
 
-XC AFCC MVP Step 1 Readiness
+Agentforce Cost Calculator Step 1 Readiness
 
 Org Alias: $ORG_ALIAS
 Scenario: $SCENARIO

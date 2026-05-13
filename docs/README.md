@@ -3,11 +3,11 @@
 Repository: `git@github.com:xcthomaswagner/agentforce-cost-calculator.git`  
 Local folder: `/Users/thomaswagner/Desktop/Projects.nosync/agentforce cost calculator`
 
-This docs set defines the MVP for the Salesforce-native **XC Agentforce Cost Calculator**.
+This docs set defines the current release for the Salesforce-native **XC Agentforce Cost Calculator**.
 
-## MVP Definition
+## Release Definition
 
-The MVP has two sequential steps:
+The release has two sequential steps:
 
 1. **Synthetic Test Environment**
    - A developer runs one script on a Mac.
@@ -24,15 +24,15 @@ The MVP has two sequential steps:
    - The app runs against native Service Cloud and Agentforce data.
    - Native source discovery, native sync, and data health prove the app works without synthetic data.
 
-Production deployment is explicitly **not included** in the MVP.
+Production deployment is explicitly **not included** in this release.
 
 ## Documents
 
 | Document | Purpose |
 |---|---|
 | `CODEX_GOAL_PROMPT.md` | Copy/paste prompt for Codex Goal |
-| `MVP_EXECUTION_SPEC.md` | Full functional and technical MVP spec |
-| `MVP_EXECUTION_SPEC_V2.md` | Corrected native Agentforce/Service Cloud MVP spec |
+| `EXECUTION_SPEC.md` | Full functional and technical release spec |
+| `NATIVE_EXECUTION_SPEC.md` | Corrected native Agentforce/Service Cloud release spec |
 | `NATIVE_AGENTFORCE_SOURCE_SPEC.md` | Native object discovery and sync model |
 | `SALESFORCE_METADATA_SPEC.md` | Salesforce objects, fields, classes, LWCs, permissions |
 | `DEPLOYMENT_SCRIPTS_SPEC.md` | Required Mac/CLI scripts and expected behavior |

@@ -29,7 +29,7 @@ Core must detect and use these when available:
 - `AgentWork`
 - `Conversation`
 
-The first MVP implementation may estimate usage units from session/work records when billing-grade usage units are not available directly in the object. Those rows must remain auditable through source object name, source record id, calculation basis, and raw payload.
+The first release implementation may estimate usage units from session/work records when billing-grade usage units are not available directly in the object. Those rows must remain auditable through source object name, source record id, calculation basis, and raw payload.
 
 ## Sync Output
 
@@ -61,4 +61,4 @@ Data health must report:
 
 ## Known Implementation Caveat
 
-Salesforce stores some conversation content off-platform. Core MVP should not attempt to parse off-platform transcripts through Apex. Detailed transcript analysis belongs in a future version using Salesforce-supported Conversation Data APIs or Data Cloud.
+Salesforce stores some conversation content off-platform. Core should not attempt to parse off-platform transcripts through Apex. Detailed transcript analysis belongs in a future version using Salesforce-supported Conversation Data APIs or Data Cloud.

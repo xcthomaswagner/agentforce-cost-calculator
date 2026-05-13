@@ -1,6 +1,6 @@
 # Codex Goal Prompt
 
-> V2 correction: this original prompt is superseded for the Agentforce sandbox flow by `MVP_EXECUTION_SPEC_V2.md` and `NATIVE_AGENTFORCE_SOURCE_SPEC.md`.
+> V2 correction: this original prompt is superseded for the Agentforce sandbox flow by `NATIVE_EXECUTION_SPEC.md` and `NATIVE_AGENTFORCE_SOURCE_SPEC.md`.
 > CSV import is fallback-only. Step 2 must analyze native Service Cloud/Agentforce data when those objects and rows exist.
 
 Use the following as historical context only unless the V2 specs say otherwise.
@@ -9,7 +9,7 @@ Use the following as historical context only unless the V2 specs say otherwise.
 
 ## GOAL
 
-Build the MVP for the Salesforce-native **XC Agentforce Cost Calculator** in the repository:
+Build the release for the Salesforce-native **XC Agentforce Cost Calculator** in the repository:
 
 `git@github.com:xcthomaswagner/agentforce-cost-calculator.git`
 
@@ -17,7 +17,7 @@ Local working folder:
 
 `/Users/thomaswagner/Desktop/Projects.nosync/agentforce cost calculator`
 
-The MVP is complete when both scripted flows work end-to-end:
+The release is complete when both scripted flows work end-to-end:
 
 1. **Synthetic Test Environment**
    - A developer runs one script on a Mac.
@@ -36,13 +36,13 @@ The MVP is complete when both scripted flows work end-to-end:
    - The app can analyze live org usage data.
    - Data health, report builder, dashboard, and case explorer work without synthetic data.
 
-Production deployment is out of scope for this MVP.
+Production deployment is out of scope for this release.
 
 ---
 
 ## NON-NEGOTIABLE CONSTRAINTS
 
-- Keep the solution fully within Salesforce for the MVP.
+- Keep the solution fully within Salesforce for this release.
 - Do not add an external Node service, external database, middleware, or LLM service.
 - Do not require Agentforce, Omni-Channel, Messaging, or Digital Engagement for the synthetic test org.
 - Step 1 must work without Agentforce.
@@ -54,7 +54,7 @@ Production deployment is out of scope for this MVP.
 - Demo/synthetic tooling must live only in the Demo Harness source area.
 - Demo Harness must be permission-gated and sandbox/scratch-org guarded.
 - Customer sandbox override for Demo Harness must exist, but must be explicit, auditable, and expiring.
-- Production deployment is not part of the MVP.
+- Production deployment is not part of this release.
 
 ---
 
@@ -430,7 +430,7 @@ Step 2 is done when:
 11. Create Step 2 script.
 12. Create CSV importer.
 13. Run Mac/browser smoke test and fix defects.
-14. Produce MVP readiness scorecard.
+14. Produce release readiness scorecard.
 
 ---
 

@@ -2,9 +2,9 @@
 
 ## 1. Status
 
-Deprecated for the primary MVP Step 2 flow. CSV import is now a fallback/admin utility only.
+Deprecated for the primary Release Step 2 flow. CSV import is now a fallback/admin utility only.
 
-Use `MVP_EXECUTION_SPEC_V2.md` and `NATIVE_AGENTFORCE_SOURCE_SPEC.md` as the authority for native Agentforce sandbox analysis.
+Use `NATIVE_EXECUTION_SPEC.md` and `NATIVE_AGENTFORCE_SOURCE_SPEC.md` as the authority for native Agentforce sandbox analysis.
 
 ## 2. Purpose
 

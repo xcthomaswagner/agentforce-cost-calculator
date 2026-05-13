@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This playbook defines how to test the MVP on a Mac using scripts, Salesforce CLI, browser inspection, and repeatable UI smoke tests.
+This playbook defines how to test the release on a Mac using scripts, Salesforce CLI, browser inspection, and repeatable UI smoke tests.
 
 The objective is to flush out defects in deployment, setup, data generation, UI behavior, and reporting.
 

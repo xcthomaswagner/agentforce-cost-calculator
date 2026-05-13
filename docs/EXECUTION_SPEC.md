@@ -1,12 +1,12 @@
-# MVP Execution Spec — XC Agentforce Cost Calculator
+# Execution Spec — XC Agentforce Cost Calculator
 
-> Superseded for Step 2 by `MVP_EXECUTION_SPEC_V2.md`. V1 incorrectly treated CSV import as the primary Agentforce sandbox path. CSV is now fallback only; native Agentforce/Service Cloud source discovery is the primary Step 2 path.
+> Superseded for Step 2 by `NATIVE_EXECUTION_SPEC.md`. V1 incorrectly treated CSV import as the primary Agentforce sandbox path. CSV is now fallback only; native Agentforce/Service Cloud source discovery is the primary Step 2 path.
 
 ## 1. Product Goal
 
 Build a Salesforce-native application that calculates and explains Agentforce-related service cost by Case, Queue, Agent, Topic, Channel, Outcome, and time period.
 
-The MVP has two scripted stages:
+The release has two scripted stages:
 
 1. **Synthetic Test Environment**
    - Create a scratch org.
@@ -22,13 +22,13 @@ The MVP has two scripted stages:
    - Run data health and reporting.
    - Prove the application works without synthetic/demo tooling.
 
-Production deployment is excluded from the MVP.
+Production deployment is excluded from this release.
 
 ---
 
 ## 2. Core Assumptions
 
-- The MVP remains fully inside Salesforce.
+- The release remains fully inside Salesforce.
 - No external service, database, middleware, or LLM is introduced.
 - Step 1 does not require Agentforce, Omni-Channel, Messaging, or Digital Engagement.
 - Step 1 uses standard Salesforce `Account`, `Contact`, and `Case` records plus custom XC_AFCC objects.
@@ -44,9 +44,9 @@ Production deployment is excluded from the MVP.
 | Mode | Target Org | Source/Packages | Data | Purpose |
 |---|---|---|---|---|
 | Dev | Scratch org | Source deploy | Developer-controlled | Fast iteration |
-| Synthetic Test | Scratch org | Core + Demo Harness | Synthetic | MVP Step 1 |
-| Agentforce Sandbox | Existing sandbox | Core only | Native Service Cloud/Agentforce | MVP Step 2 |
-| Production | Production org | Core only | Live | Out of scope for MVP |
+| Synthetic Test | Scratch org | Core + Demo Harness | Synthetic | Release Step 1 |
+| Agentforce Sandbox | Existing sandbox | Core only | Native Service Cloud/Agentforce | Release Step 2 |
+| Production | Production org | Core only | Live | Out of scope for this release |
 
 ---
 
