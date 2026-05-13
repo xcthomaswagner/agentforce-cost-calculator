@@ -21,7 +21,7 @@
               <dd>{configStatus}</dd>
             </div>
             <div>
-              <dt>CSV Fallback</dt>
+              <dt>CSV Fallback <lightning-helptext content="Fallback-only admin import path. Native Salesforce and Agentforce source discovery is the primary MVP path."></lightning-helptext></dt>
               <dd>{csvStatus}</dd>
             </div>
             <div>
@@ -60,11 +60,11 @@
               <dd>{nativeReadiness.contactCount}</dd>
             </div>
             <div>
-              <dt>Native Source Rows</dt>
+              <dt>Native Source Rows <lightning-helptext content="Rows found in supported Service Cloud or Agentforce source objects such as MessagingSession, AgentWork, or Conversation."></lightning-helptext></dt>
               <dd>{nativeReadiness.nativeSourceRows}</dd>
             </div>
             <div>
-              <dt>Live Ledger Rows</dt>
+              <dt>Live Ledger Rows <lightning-helptext content="Normalized AFCC cost ledger rows created from native Salesforce source records and marked with source system LIVE."></lightning-helptext></dt>
               <dd>{nativeReadiness.liveLedgerRows}</dd>
             </div>
           </dl>
@@ -157,7 +157,7 @@
               <dd>{health.failedRows}</dd>
             </div>
             <div>
-              <dt>Unallocated %</dt>
+              <dt>Unallocated % <lightning-helptext content="Percentage of usage rows that could not be linked to a Salesforce Case. Lower is better for case-level cost analysis."></lightning-helptext></dt>
               <dd>{health.unallocatedUsagePercent}</dd>
             </div>
           </dl>
@@ -191,7 +191,7 @@
               <dd>{summary.linkedCases}</dd>
             </div>
             <div>
-              <dt>Allocated Cost</dt>
+              <dt>Allocated Cost <lightning-helptext content="Total cost assigned to ledger rows using the configured billing model, rates, and allocation method."></lightning-helptext></dt>
               <dd>
                 <lightning-formatted-number value={summary.allocatedCost} format-style="currency" currency-code="USD"></lightning-formatted-number>
               </dd>

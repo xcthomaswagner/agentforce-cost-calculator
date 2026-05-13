@@ -26,11 +26,11 @@
               <dd>{summary.ledgerRows}</dd>
             </div>
             <div>
-              <dt>Failed Rows</dt>
+              <dt>Failed Rows <lightning-helptext content="Staging rows that could not be processed into ledger rows because required fields, rates, or supported billing values were missing."></lightning-helptext></dt>
               <dd>{summary.failedRows}</dd>
             </div>
             <div>
-              <dt>Deferred Cases</dt>
+              <dt>Deferred Cases <lightning-helptext content="Cases marked as deferred in usage or ledger data. Useful for finding expensive unresolved support work."></lightning-helptext></dt>
               <dd>{summary.deferredCases}</dd>
             </div>
             <div>
@@ -40,7 +40,7 @@
               </dd>
             </div>
             <div>
-              <dt>Unallocated %</dt>
+              <dt>Unallocated % <lightning-helptext content="Percentage of usage rows that could not be linked to a Salesforce Case. Lower is better for case-level cost analysis."></lightning-helptext></dt>
               <dd>{summary.unallocatedUsagePercent}</dd>
             </div>
           </dl>

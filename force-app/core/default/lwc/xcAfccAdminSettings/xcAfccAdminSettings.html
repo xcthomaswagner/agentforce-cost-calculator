@@ -37,7 +37,7 @@
               <dd>{state.configCount}</dd>
             </div>
             <div>
-              <dt>CSV Fallback</dt>
+              <dt>CSV Fallback <lightning-helptext content="Fallback-only admin import path. Leave disabled unless native source discovery cannot be used for a controlled test or one-time import."></lightning-helptext></dt>
               <dd>{csvStatus}</dd>
             </div>
           </dl>
@@ -56,19 +56,19 @@
         <template if:true={hasConfig}>
           <dl class="metrics">
             <div>
-              <dt>Billing Model</dt>
+              <dt>Billing Model <lightning-helptext content="Determines whether cost is calculated from credits, conversations, actions, or another configured cost basis."></lightning-helptext></dt>
               <dd>{billingModel}</dd>
             </div>
             <div>
-              <dt>Allocation Method</dt>
+              <dt>Allocation Method <lightning-helptext content="Controls how usage is assigned to cases when more than one relationship or allocation path exists."></lightning-helptext></dt>
               <dd>{allocationMethod}</dd>
             </div>
             <div>
-              <dt>Contract Credit Rate</dt>
+              <dt>Contract Credit Rate <lightning-helptext content="Customer-specific cost per Agentforce credit when flex credit pricing is used."></lightning-helptext></dt>
               <dd>{contractCreditRate}</dd>
             </div>
             <div>
-              <dt>Contract Conversation Rate</dt>
+              <dt>Contract Conversation Rate <lightning-helptext content="Customer-specific cost per conversation when conversation pricing is used."></lightning-helptext></dt>
               <dd>{contractConversationRate}</dd>
             </div>
             <div>
@@ -84,7 +84,7 @@
               <dd>{installMode}</dd>
             </div>
             <div>
-              <dt>CSV Fallback</dt>
+              <dt>CSV Fallback <lightning-helptext content="CSV is retained for explicit fallback use only and is not the primary Agentforce sandbox path."></lightning-helptext></dt>
               <dd>{csvStatus}</dd>
             </div>
           </dl>
@@ -96,6 +96,39 @@
             <span>Create the default configuration from Setup.</span>
           </div>
         </template>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Help & Readiness</h2>
+            <p>Use these definitions when setup or analysis readiness is unclear.</p>
+          </div>
+          <a href="/lightning/n/XC_AFCC_Data_Health">Open Data Health</a>
+        </div>
+
+        <div class="help-grid">
+          <article>
+            <h3>Native Source Discovery</h3>
+            <p>AFCC checks Service Cloud and Agentforce objects that can be queried inside Salesforce. Supported source objects are discovered dynamically so Core can still deploy in orgs that do not have every feature enabled.</p>
+          </article>
+          <article>
+            <h3>Readiness States</h3>
+            <p><strong>ANALYSIS_READY</strong> means live ledger rows exist. <strong>NATIVE_READY</strong> means native source rows exist but have not been synced. <strong>READY_FOR_NATIVE_DATA</strong> means supported objects exist but no source rows were found. <strong>MISSING_NATIVE_SOURCE</strong> means the org lacks supported objects or access.</p>
+          </article>
+          <article>
+            <h3>Cost Basis</h3>
+            <p>Costs can be actual, allocated, estimated, or incomplete. Estimated rows should remain auditable through source object, source record id, billing model, and calculation basis.</p>
+          </article>
+          <article>
+            <h3>Zero Native Rows</h3>
+            <p>Confirm the target org has Agentforce or Service Cloud conversation/work activity, then check object permissions for MessagingSession, AgentWork, and Conversation.</p>
+          </article>
+          <article>
+            <h3>CSV Fallback</h3>
+            <p>CSV is available only as an explicit fallback path. It should not be used as the standard sandbox or production-like analysis workflow.</p>
+          </article>
+        </div>
       </section>
 
       <section class="section">

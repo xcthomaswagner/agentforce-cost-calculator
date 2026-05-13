@@ -28,7 +28,7 @@
               <dd>{summary.linkedCases}</dd>
             </div>
             <div>
-              <dt>Allocated Cost</dt>
+              <dt>Allocated Cost <lightning-helptext content="Total cost assigned to ledger rows using the configured billing model, rates, and allocation method."></lightning-helptext></dt>
               <dd>
                 <lightning-formatted-number value={summary.allocatedCost} format-style="currency" currency-code="USD"></lightning-formatted-number>
               </dd>
@@ -42,7 +42,7 @@
               <dd>{summary.conversations}</dd>
             </div>
             <div>
-              <dt>Unallocated %</dt>
+              <dt>Unallocated % <lightning-helptext content="Percentage of usage rows that could not be linked to a Salesforce Case. Lower is better for case-level cost analysis."></lightning-helptext></dt>
               <dd>{summary.unallocatedUsagePercent}</dd>
             </div>
           </dl>
