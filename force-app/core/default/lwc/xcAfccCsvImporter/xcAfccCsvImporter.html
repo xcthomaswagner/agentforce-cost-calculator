@@ -1,9 +1,43 @@
 <template>
-  <lightning-card title="CSV Importer">
-    <div class="slds-p-around_medium">
-      <lightning-textarea label="CSV" value={csvBody} onchange={bodyChanged}></lightning-textarea>
-      <lightning-button label="Import CSV" onclick={importData}></lightning-button>
-      <template if:true={result}><pre>{resultText}</pre></template>
+  <lightning-card title="XC AFCC CSV Importer" icon-name="utility:upload">
+    <div class="workspace">
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Usage CSV Import</h2>
+            <p>Paste exported Agentforce usage data using the expected column headers. Imported rows are staged and converted into cost ledger rows.</p>
+          </div>
+          <a href="/lightning/n/XC_AFCC_Setup">Back to Setup</a>
+        </div>
+
+        <lightning-textarea label="CSV Usage Data" value={csvBody} onchange={bodyChanged} disabled={busy} class="csv-input"></lightning-textarea>
+
+        <div class="button-row">
+          <lightning-button variant="brand" label="Import CSV" onclick={importData} disabled={busy}></lightning-button>
+        </div>
+
+        <template if:true={result}>
+          <dl class="metrics">
+            <div>
+              <dt>Status</dt>
+              <dd>{result.status}</dd>
+            </div>
+            <div>
+              <dt>Rows</dt>
+              <dd>{result.rowCount}</dd>
+            </div>
+            <div>
+              <dt>Imported</dt>
+              <dd>{result.successCount}</dd>
+            </div>
+            <div>
+              <dt>Errors</dt>
+              <dd>{result.errorCount}</dd>
+            </div>
+          </dl>
+          <p class="result-message">{result.message}</p>
+        </template>
+      </section>
     </div>
   </lightning-card>
 </template>

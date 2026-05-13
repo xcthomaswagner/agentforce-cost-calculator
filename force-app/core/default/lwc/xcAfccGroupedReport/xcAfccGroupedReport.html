@@ -1,8 +1,33 @@
 <template>
-  <lightning-card title="Grouped Report">
-    <div class="slds-p-around_medium">
-      <lightning-combobox label="Group By" value={groupBy} options={options} onchange={change}></lightning-combobox>
-      <lightning-datatable key-field="groupValue" data={rows} columns={columns}></lightning-datatable>
+  <lightning-card title="XC AFCC Grouped Report" icon-name="utility:table">
+    <div slot="actions" class="actions">
+      <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" title="Refresh" onclick={load}></lightning-button-icon>
+    </div>
+
+    <div class="workspace">
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Cost Grouping</h2>
+            <p>Group ledger cost by the operating dimension that answers the current analysis question.</p>
+          </div>
+          <a href="/lightning/n/XC_AFCC_Cost_Dashboard">Back to Dashboard</a>
+        </div>
+
+        <div class="form-row">
+          <lightning-combobox label="Group By" value={groupBy} options={options} onchange={change}></lightning-combobox>
+        </div>
+
+        <template if:true={hasRows}>
+          <lightning-datatable key-field="groupValue" data={rows} columns={columns} hide-checkbox-column></lightning-datatable>
+        </template>
+        <template if:false={hasRows}>
+          <div class="empty-state">
+            <strong>No grouped rows yet.</strong>
+            <span>Import usage data first, then return to this report.</span>
+          </div>
+        </template>
+      </section>
     </div>
   </lightning-card>
 </template>

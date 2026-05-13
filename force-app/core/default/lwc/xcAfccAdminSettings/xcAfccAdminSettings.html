@@ -1,8 +1,48 @@
 <template>
-  <lightning-card title="Admin Settings">
-    <div class="slds-p-around_medium">
-      <lightning-button label="Refresh" onclick={load}></lightning-button>
-      <template if:true={state}><pre>{stateText}</pre></template>
+  <lightning-card title="XC AFCC Admin Settings" icon-name="utility:settings">
+    <div slot="actions" class="actions">
+      <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" title="Refresh" onclick={load}></lightning-button-icon>
+    </div>
+
+    <div class="workspace">
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Environment and Configuration</h2>
+            <p>Review install context and core feature availability. Use Setup for actions.</p>
+          </div>
+          <a href="/lightning/n/XC_AFCC_Setup">Open Setup</a>
+        </div>
+
+        <template if:true={state}>
+          <dl class="metrics">
+            <div>
+              <dt>Org Name</dt>
+              <dd>{orgName}</dd>
+            </div>
+            <div>
+              <dt>Org Type</dt>
+              <dd>{orgType}</dd>
+            </div>
+            <div>
+              <dt>Sandbox</dt>
+              <dd>{sandboxStatus}</dd>
+            </div>
+            <div>
+              <dt>Production</dt>
+              <dd>{productionStatus}</dd>
+            </div>
+            <div>
+              <dt>Configuration Records</dt>
+              <dd>{state.configCount}</dd>
+            </div>
+            <div>
+              <dt>CSV Import</dt>
+              <dd>{csvStatus}</dd>
+            </div>
+          </dl>
+        </template>
+      </section>
     </div>
   </lightning-card>
 </template>

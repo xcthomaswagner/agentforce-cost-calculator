@@ -1,12 +1,43 @@
 <template>
-  <lightning-card title="Case Explorer">
-    <div class="slds-p-around_medium">
-      <lightning-input label="Case Number" value={caseNumber} onchange={caseNumberChanged}></lightning-input>
-      <lightning-button label="Explain" onclick={explain}></lightning-button>
-      <template if:true={explanation}>
-        <p class="metric">{explanation.allocatedCost}</p>
-        <lightning-datatable key-field="Id" data={explanation.rows} columns={columns}></lightning-datatable>
-      </template>
+  <lightning-card title="XC AFCC Case Explorer" icon-name="standard:case">
+    <div class="workspace">
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Case Cost Explanation</h2>
+            <p>Enter a Salesforce case number to see the ledger rows and cost attribution tied to that case.</p>
+          </div>
+          <a href="/lightning/n/XC_AFCC_Grouped_Report">Open Grouped Report</a>
+        </div>
+
+        <div class="lookup-row">
+          <lightning-input type="search" label="Case Number" value={caseNumber} onchange={caseNumberChanged}></lightning-input>
+          <lightning-button variant="brand" label="Explain Case" onclick={explain} disabled={busy}></lightning-button>
+        </div>
+
+        <template if:true={explanation}>
+          <dl class="metrics">
+            <div>
+              <dt>Total Allocated Cost</dt>
+              <dd>
+                <lightning-formatted-number value={explanation.allocatedCost} format-style="currency" currency-code="USD"></lightning-formatted-number>
+              </dd>
+            </div>
+            <div>
+              <dt>Ledger Rows</dt>
+              <dd>{rowCount}</dd>
+            </div>
+          </dl>
+          <lightning-datatable key-field="Id" data={explanation.rows} columns={columns} hide-checkbox-column></lightning-datatable>
+        </template>
+
+        <template if:false={explanation}>
+          <div class="empty-state">
+            <strong>No case selected.</strong>
+            <span>Use a case number with linked usage ledger rows to explain its Agentforce cost.</span>
+          </div>
+        </template>
+      </section>
     </div>
   </lightning-card>
 </template>

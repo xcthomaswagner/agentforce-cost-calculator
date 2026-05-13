@@ -1,2 +1,115 @@
-:host { display: block; }
-.metric { font-size: 1.25rem; font-weight: 700; }
+:host {
+  display: block;
+}
+
+.workspace {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f3f3f3;
+}
+
+.section {
+  border: 1px solid #dddbda;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  background: #ffffff;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.section-header p,
+.empty-state span,
+.result-message {
+  margin: 0.25rem 0 0;
+  color: #5c5c5c;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.metrics.compact {
+  margin-top: 1rem;
+}
+
+.metrics dt {
+  color: #5c5c5c;
+  font-size: 0.75rem;
+}
+
+.metrics dd {
+  margin: 0.125rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.button-row,
+.status-row,
+.link-row,
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.status-row {
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.status-badge {
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-weight: 700;
+}
+
+.pass {
+  color: #194e31;
+  background: #dff6e8;
+}
+
+.warn {
+  color: #5f3b00;
+  background: #fff1cc;
+}
+
+.fail {
+  color: #8c1d18;
+  background: #fddede;
+}
+
+.neutral {
+  color: #2e2e2e;
+  background: #f3f3f3;
+}
+
+.csv-input {
+  --slds-c-textarea-sizing-min-height: 8rem;
+}
+
+.empty-state {
+  display: grid;
+  gap: 0.25rem;
+  border: 1px dashed #c9c9c9;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  background: #fafaf9;
+}

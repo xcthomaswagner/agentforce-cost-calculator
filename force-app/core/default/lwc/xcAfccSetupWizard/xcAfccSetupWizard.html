@@ -1,8 +1,172 @@
 <template>
-  <lightning-card title="XC AFCC Setup">
-    <div class="slds-p-around_medium">
-      <lightning-button label="Create Default Config" onclick={ensure}></lightning-button>
-      <template if:true={state}><pre>{stateText}</pre></template>
+  <lightning-card title="XC Agentforce Cost Calculator" icon-name="utility:settings">
+    <div slot="actions" class="actions">
+      <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" title="Refresh" onclick={load}></lightning-button-icon>
+    </div>
+
+    <div class="workspace">
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Org Setup</h2>
+            <p>Confirm the calculator is configured before importing usage data.</p>
+          </div>
+          <lightning-button variant="brand-outline" label="Create Default Config" onclick={ensure} disabled={busy}></lightning-button>
+        </div>
+
+        <template if:true={state}>
+          <dl class="metrics">
+            <div>
+              <dt>Configuration</dt>
+              <dd>{configStatus}</dd>
+            </div>
+            <div>
+              <dt>CSV Import</dt>
+              <dd>{csvStatus}</dd>
+            </div>
+            <div>
+              <dt>Org Type</dt>
+              <dd>{orgType}</dd>
+            </div>
+            <div>
+              <dt>Instance</dt>
+              <dd>{instanceName}</dd>
+            </div>
+          </dl>
+        </template>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Import Usage</h2>
+            <p>Paste Agentforce usage CSV data. Detailed import history remains available on the CSV Importer tab.</p>
+          </div>
+          <a href="/lightning/n/XC_AFCC_CSV_Importer">Open CSV Importer</a>
+        </div>
+
+        <lightning-textarea
+          label="CSV Usage Data"
+          value={csvBody}
+          onchange={bodyChanged}
+          disabled={busy}
+          class="csv-input">
+        </lightning-textarea>
+
+        <div class="button-row">
+          <lightning-button variant="brand" label="Import CSV" onclick={importData} disabled={busy}></lightning-button>
+        </div>
+
+        <template if:true={importResult}>
+          <dl class="metrics compact">
+            <div>
+              <dt>Status</dt>
+              <dd>{importResult.status}</dd>
+            </div>
+            <div>
+              <dt>Rows</dt>
+              <dd>{importResult.rowCount}</dd>
+            </div>
+            <div>
+              <dt>Imported</dt>
+              <dd>{importResult.successCount}</dd>
+            </div>
+            <div>
+              <dt>Errors</dt>
+              <dd>{importResult.errorCount}</dd>
+            </div>
+          </dl>
+          <p class="result-message">{importResult.message}</p>
+        </template>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Data Health</h2>
+            <p>Run health checks before using reports or case-level explanations.</p>
+          </div>
+          <a href="/lightning/n/XC_AFCC_Data_Health">Open Data Health</a>
+        </div>
+
+        <div class="status-row">
+          <span class={healthBadgeClass}>{healthResult}</span>
+          <lightning-button label="Run Data Health" onclick={runHealth} disabled={busy}></lightning-button>
+        </div>
+
+        <template if:true={health}>
+          <dl class="metrics compact">
+            <div>
+              <dt>Staging Rows</dt>
+              <dd>{health.stagingRows}</dd>
+            </div>
+            <div>
+              <dt>Ledger Rows</dt>
+              <dd>{health.ledgerRows}</dd>
+            </div>
+            <div>
+              <dt>Failed Rows</dt>
+              <dd>{health.failedRows}</dd>
+            </div>
+            <div>
+              <dt>Unallocated %</dt>
+              <dd>{health.unallocatedUsagePercent}</dd>
+            </div>
+          </dl>
+          <lightning-datatable key-field="name" data={health.checks} columns={healthColumns} hide-checkbox-column></lightning-datatable>
+        </template>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Analyze</h2>
+            <p>Review totals here, then use the detail pages for queue reporting and case explanations.</p>
+          </div>
+          <div class="link-row">
+            <a href="/lightning/n/XC_AFCC_Cost_Dashboard">Dashboard</a>
+            <a href="/lightning/n/XC_AFCC_Grouped_Report">Grouped Report</a>
+            <a href="/lightning/n/XC_AFCC_Case_Explorer">Case Explorer</a>
+          </div>
+        </div>
+
+        <template if:true={summary}>
+          <dl class="metrics">
+            <div>
+              <dt>Ledger Rows</dt>
+              <dd>{summary.ledgerRows}</dd>
+            </div>
+            <div>
+              <dt>Linked Cases</dt>
+              <dd>{summary.linkedCases}</dd>
+            </div>
+            <div>
+              <dt>Allocated Cost</dt>
+              <dd>
+                <lightning-formatted-number value={summary.allocatedCost} format-style="currency" currency-code="USD"></lightning-formatted-number>
+              </dd>
+            </div>
+            <div>
+              <dt>Credits</dt>
+              <dd>{summary.credits}</dd>
+            </div>
+          </dl>
+
+          <template if:true={hasUsage}>
+            <lightning-datatable key-field="groupValue" data={summary.costByQueue} columns={queueColumns} hide-checkbox-column></lightning-datatable>
+          </template>
+          <template if:false={hasUsage}>
+            <div class="empty-state">
+              <strong>Ready for data import.</strong>
+              <span>Import usage data to activate dashboard totals, grouped reports, and case explanations.</span>
+            </div>
+          </template>
+        </template>
+      </section>
+
+      <template if:true={error}>
+        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">{error}</div>
+      </template>
     </div>
   </lightning-card>
 </template>

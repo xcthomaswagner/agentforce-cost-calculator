@@ -1,15 +1,63 @@
 <template>
-  <lightning-card title="Cost Dashboard">
-    <div class="slds-p-around_medium">
-      <template if:true={summary}>
-        <div class="slds-grid slds-wrap slds-gutters">
-          <div class="slds-col slds-size_1-of-4"><p>Rows</p><p class="metric">{summary.ledgerRows}</p></div>
-          <div class="slds-col slds-size_1-of-4"><p>Cost</p><p class="metric">{summary.allocatedCost}</p></div>
-          <div class="slds-col slds-size_1-of-4"><p>Credits</p><p class="metric">{summary.credits}</p></div>
-          <div class="slds-col slds-size_1-of-4"><p>Unallocated %</p><p class="metric">{summary.unallocatedUsagePercent}</p></div>
+  <lightning-card title="XC AFCC Cost Dashboard" icon-name="utility:chart">
+    <div slot="actions" class="actions">
+      <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" title="Refresh" onclick={load}></lightning-button-icon>
+    </div>
+
+    <div class="workspace">
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Usage Cost Overview</h2>
+            <p>Monitor imported or synthetic Agentforce usage across cost, credits, case linkage, and queue concentration.</p>
+          </div>
+          <div class="link-row">
+            <a href="/lightning/n/XC_AFCC_Grouped_Report">Grouped Report</a>
+            <a href="/lightning/n/XC_AFCC_Case_Explorer">Case Explorer</a>
+          </div>
         </div>
-        <lightning-datatable key-field="groupValue" data={summary.costByQueue} columns={columns}></lightning-datatable>
-      </template>
+
+        <template if:true={summary}>
+          <dl class="metrics">
+            <div>
+              <dt>Ledger Rows</dt>
+              <dd>{summary.ledgerRows}</dd>
+            </div>
+            <div>
+              <dt>Linked Cases</dt>
+              <dd>{summary.linkedCases}</dd>
+            </div>
+            <div>
+              <dt>Allocated Cost</dt>
+              <dd>
+                <lightning-formatted-number value={summary.allocatedCost} format-style="currency" currency-code="USD"></lightning-formatted-number>
+              </dd>
+            </div>
+            <div>
+              <dt>Credits</dt>
+              <dd>{summary.credits}</dd>
+            </div>
+            <div>
+              <dt>Conversations</dt>
+              <dd>{summary.conversations}</dd>
+            </div>
+            <div>
+              <dt>Unallocated %</dt>
+              <dd>{summary.unallocatedUsagePercent}</dd>
+            </div>
+          </dl>
+
+          <template if:true={hasUsage}>
+            <lightning-datatable key-field="groupValue" data={summary.costByQueue} columns={columns} hide-checkbox-column></lightning-datatable>
+          </template>
+          <template if:false={hasUsage}>
+            <div class="empty-state">
+              <strong>No usage data yet.</strong>
+              <span>Import CSV usage data or seed synthetic data from the Demo Harness to populate this dashboard.</span>
+            </div>
+          </template>
+        </template>
+      </section>
     </div>
   </lightning-card>
 </template>

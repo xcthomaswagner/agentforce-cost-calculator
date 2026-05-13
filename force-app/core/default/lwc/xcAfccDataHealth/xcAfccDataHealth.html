@@ -1,11 +1,59 @@
 <template>
-  <lightning-card title="Data Health">
-    <div class="slds-p-around_medium">
-      <lightning-button label="Run Data Health" onclick={run}></lightning-button>
-      <template if:true={summary}>
-        <p class="metric">{summary.result}</p>
-        <lightning-datatable key-field="name" data={summary.checks} columns={columns}></lightning-datatable>
-      </template>
+  <lightning-card title="XC AFCC Data Health" icon-name="utility:success">
+    <div slot="actions" class="actions">
+      <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" title="Refresh" onclick={load}></lightning-button-icon>
+      <lightning-button variant="brand" label="Run Health Check" onclick={run} disabled={busy}></lightning-button>
+    </div>
+
+    <div class="workspace">
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Health Summary</h2>
+            <p>Use this before reports or case analysis to catch missing, failed, or unallocated usage.</p>
+          </div>
+          <span class={badgeClass}>{resultLabel}</span>
+        </div>
+
+        <template if:true={summary}>
+          <dl class="metrics">
+            <div>
+              <dt>Staging Rows</dt>
+              <dd>{summary.stagingRows}</dd>
+            </div>
+            <div>
+              <dt>Ledger Rows</dt>
+              <dd>{summary.ledgerRows}</dd>
+            </div>
+            <div>
+              <dt>Failed Rows</dt>
+              <dd>{summary.failedRows}</dd>
+            </div>
+            <div>
+              <dt>Deferred Cases</dt>
+              <dd>{summary.deferredCases}</dd>
+            </div>
+            <div>
+              <dt>Total Cost</dt>
+              <dd>
+                <lightning-formatted-number value={summary.totalAllocatedCost} format-style="currency" currency-code="USD"></lightning-formatted-number>
+              </dd>
+            </div>
+            <div>
+              <dt>Unallocated %</dt>
+              <dd>{summary.unallocatedUsagePercent}</dd>
+            </div>
+          </dl>
+          <lightning-datatable key-field="name" data={summary.checks} columns={columns} hide-checkbox-column></lightning-datatable>
+        </template>
+
+        <template if:false={summary}>
+          <div class="empty-state">
+            <strong>No health check has loaded.</strong>
+            <span>Run the health check to create the first summary.</span>
+          </div>
+        </template>
+      </section>
     </div>
   </lightning-card>
 </template>
