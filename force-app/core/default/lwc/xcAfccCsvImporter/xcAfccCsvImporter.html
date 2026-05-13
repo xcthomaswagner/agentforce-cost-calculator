@@ -1,0 +1,9 @@
+<template>
+  <lightning-card title="CSV Importer">
+    <div class="slds-p-around_medium">
+      <lightning-textarea label="CSV" value={csvBody} onchange={bodyChanged}></lightning-textarea>
+      <lightning-button label="Import CSV" onclick={importData}></lightning-button>
+      <template if:true={result}><pre>{resultText}</pre></template>
+    </div>
+  </lightning-card>
+</template>

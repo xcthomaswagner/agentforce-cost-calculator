@@ -1,0 +1,15 @@
+<template>
+  <lightning-card title="Cost Dashboard">
+    <div class="slds-p-around_medium">
+      <template if:true={summary}>
+        <div class="slds-grid slds-wrap slds-gutters">
+          <div class="slds-col slds-size_1-of-4"><p>Rows</p><p class="metric">{summary.ledgerRows}</p></div>
+          <div class="slds-col slds-size_1-of-4"><p>Cost</p><p class="metric">{summary.allocatedCost}</p></div>
+          <div class="slds-col slds-size_1-of-4"><p>Credits</p><p class="metric">{summary.credits}</p></div>
+          <div class="slds-col slds-size_1-of-4"><p>Unallocated %</p><p class="metric">{summary.unallocatedUsagePercent}</p></div>
+        </div>
+        <lightning-datatable key-field="groupValue" data={summary.costByQueue} columns={columns}></lightning-datatable>
+      </template>
+    </div>
+  </lightning-card>
+</template>

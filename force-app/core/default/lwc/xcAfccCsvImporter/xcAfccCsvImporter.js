@@ -1,0 +1,3 @@
+import { LightningElement } from 'lwc';
+import importCsv from '@salesforce/apex/XC_AFCC_CsvImportService.importCsv';
+export default class XcAfccCsvImporter extends LightningElement { csvBody='source_record_id,billing_model,usage_timestamp,case_number,conversation_id,agent_name,action_name,topic,channel,queue_name,credits_used,conversations_used,action_count,case_outcome\n'; result; bodyChanged(e){ this.csvBody=e.detail.value; } async importData(){ this.result = await importCsv({ fileName: 'usage-import.csv', csvBody: this.csvBody }); } get resultText(){ return JSON.stringify(this.result, null, 2); } }

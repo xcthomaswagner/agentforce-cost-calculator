@@ -1,0 +1,13 @@
+.DS_Store
+.sf/
+.sfdx/
+.localdevserver/
+.idea/
+.vscode/
+node_modules/
+artifacts/
+coverage/
+*.log
+
+# Local copy of the original spec bundle; canonical docs live under /docs.
+agentforce-cost-calculator-spec/

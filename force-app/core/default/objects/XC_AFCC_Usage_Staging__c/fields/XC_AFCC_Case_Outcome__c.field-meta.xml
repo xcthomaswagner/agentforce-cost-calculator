@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>XC_AFCC_Case_Outcome__c</fullName>
+    <label>Case Outcome</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>RESOLVED</fullName>
+                <default>false</default>
+                <label>RESOLVED</label>
+            </value>
+            <value>
+                <fullName>DEFERRED</fullName>
+                <default>false</default>
+                <label>DEFERRED</label>
+            </value>
+            <value>
+                <fullName>ESCALATED</fullName>
+                <default>false</default>
+                <label>ESCALATED</label>
+            </value>
+            <value>
+                <fullName>ABANDONED</fullName>
+                <default>false</default>
+                <label>ABANDONED</label>
+            </value>
+            <value>
+                <fullName>UNKNOWN</fullName>
+                <default>false</default>
+                <label>UNKNOWN</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

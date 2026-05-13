@@ -1,0 +1,8 @@
+<template>
+  <lightning-card title="XC AFCC Setup">
+    <div class="slds-p-around_medium">
+      <lightning-button label="Create Default Config" onclick={ensure}></lightning-button>
+      <template if:true={state}><pre>{stateText}</pre></template>
+    </div>
+  </lightning-card>
+</template>

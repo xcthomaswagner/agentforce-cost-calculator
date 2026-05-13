@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Case Conversation Link</label>
+    <nameField>
+        <displayFormat>LK-{000000}</displayFormat>
+        <label>XC AFCC Case Conversation Link</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Case Conversation Links</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

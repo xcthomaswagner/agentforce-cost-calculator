@@ -1,0 +1,8 @@
+<template>
+  <lightning-card title="Grouped Report">
+    <div class="slds-p-around_medium">
+      <lightning-combobox label="Group By" value={groupBy} options={options} onchange={change}></lightning-combobox>
+      <lightning-datatable key-field="groupValue" data={rows} columns={columns}></lightning-datatable>
+    </div>
+  </lightning-card>
+</template>

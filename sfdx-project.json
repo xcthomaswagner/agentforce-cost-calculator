@@ -1,0 +1,22 @@
+{
+  "packageDirectories": [
+    {
+      "path": "force-app/core",
+      "default": true,
+      "package": "XC Agentforce Cost Calculator Core",
+      "versionName": "0.1.0",
+      "versionNumber": "0.1.0.NEXT"
+    },
+    {
+      "path": "force-app/demo-harness",
+      "default": false,
+      "package": "XC Agentforce Cost Calculator Demo Harness",
+      "versionName": "0.1.0",
+      "versionNumber": "0.1.0.NEXT"
+    }
+  ],
+  "name": "xc-agentforce-cost-calculator",
+  "namespace": "",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "60.0"
+}

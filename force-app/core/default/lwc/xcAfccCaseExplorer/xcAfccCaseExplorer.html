@@ -1,0 +1,12 @@
+<template>
+  <lightning-card title="Case Explorer">
+    <div class="slds-p-around_medium">
+      <lightning-input label="Case Number" value={caseNumber} onchange={caseNumberChanged}></lightning-input>
+      <lightning-button label="Explain" onclick={explain}></lightning-button>
+      <template if:true={explanation}>
+        <p class="metric">{explanation.allocatedCost}</p>
+        <lightning-datatable key-field="Id" data={explanation.rows} columns={columns}></lightning-datatable>
+      </template>
+    </div>
+  </lightning-card>
+</template>

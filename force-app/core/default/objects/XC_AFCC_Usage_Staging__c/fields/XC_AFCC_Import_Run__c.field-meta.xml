@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>XC_AFCC_Import_Run__c</fullName>
+    <label>Import Run</label>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <referenceTo>XC_AFCC_Import_Run__c</referenceTo>
+    <relationshipLabel>Import Run</relationshipLabel>
+    <relationshipName>XC_AFCC_UsageStagingRows</relationshipName>
+    <required>false</required>
+    <type>Lookup</type>
+</CustomField>

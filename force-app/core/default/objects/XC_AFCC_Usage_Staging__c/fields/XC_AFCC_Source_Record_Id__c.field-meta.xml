@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>XC_AFCC_Source_Record_Id__c</fullName>
+    <label>Source Record Id</label>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <externalId>true</externalId>
+    <unique>false</unique>
+</CustomField>

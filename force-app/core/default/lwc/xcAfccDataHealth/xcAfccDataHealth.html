@@ -1,0 +1,11 @@
+<template>
+  <lightning-card title="Data Health">
+    <div class="slds-p-around_medium">
+      <lightning-button label="Run Data Health" onclick={run}></lightning-button>
+      <template if:true={summary}>
+        <p class="metric">{summary.result}</p>
+        <lightning-datatable key-field="name" data={summary.checks} columns={columns}></lightning-datatable>
+      </template>
+    </div>
+  </lightning-card>
+</template>

@@ -1,0 +1,8 @@
+<template>
+  <lightning-card title="Scenario Picker">
+    <div class="slds-p-around_medium">
+      <lightning-combobox label="Scenario" value={scenario} options={options} onchange={change}></lightning-combobox>
+      <template if:true={scenarioConfig}><pre>{scenarioText}</pre></template>
+    </div>
+  </lightning-card>
+</template>

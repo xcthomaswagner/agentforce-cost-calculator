@@ -1,0 +1,10 @@
+{
+  "orgName": "XC AFCC Synthetic Test",
+  "edition": "developer",
+  "features": ["EnableSetPasswordInApi"],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    }
+  }
+}

@@ -1,0 +1,11 @@
+<template>
+  <lightning-card title="XC AFCC Demo Launcher">
+    <div class="slds-p-around_medium">
+      <lightning-combobox label="Scenario" value={scenario} options={scenarioOptions} onchange={scenarioChanged}></lightning-combobox>
+      <lightning-combobox label="Volume" value={volume} options={volumeOptions} onchange={volumeChanged}></lightning-combobox>
+      <lightning-button label="Seed" onclick={seed}></lightning-button>
+      <lightning-button label="Reset" onclick={reset}></lightning-button>
+      <template if:true={result}><pre>{resultText}</pre></template>
+    </div>
+  </lightning-card>
+</template>

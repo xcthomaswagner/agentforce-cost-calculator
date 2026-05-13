@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>XC_AFCC_Calculation_Basis__c</fullName>
+    <label>Calculation Basis</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>ACTUAL</fullName>
+                <default>false</default>
+                <label>ACTUAL</label>
+            </value>
+            <value>
+                <fullName>IMPORTED</fullName>
+                <default>false</default>
+                <label>IMPORTED</label>
+            </value>
+            <value>
+                <fullName>SYNTHETIC</fullName>
+                <default>false</default>
+                <label>SYNTHETIC</label>
+            </value>
+            <value>
+                <fullName>ESTIMATED</fullName>
+                <default>false</default>
+                <label>ESTIMATED</label>
+            </value>
+            <value>
+                <fullName>ALLOCATED</fullName>
+                <default>false</default>
+                <label>ALLOCATED</label>
+            </value>
+            <value>
+                <fullName>INCOMPLETE</fullName>
+                <default>false</default>
+                <label>INCOMPLETE</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
