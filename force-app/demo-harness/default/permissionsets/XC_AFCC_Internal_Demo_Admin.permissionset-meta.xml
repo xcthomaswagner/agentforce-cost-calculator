@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <applicationVisibilities>
+        <application>XC_AFCC_Demo_Harness</application>
+        <visible>true</visible>
+    </applicationVisibilities>
     <classAccesses>
         <apexClass>XC_AFCC_DemoGuardService</apexClass>
         <enabled>true</enabled>
@@ -29,4 +33,16 @@
         <name>XC_AFCC_Access_Demo_Harness</name>
     </customPermissions>
     <label>XC AFCC Internal Demo Admin</label>
+    <tabSettings>
+        <tab>XC_AFCC_Demo_Launcher</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>XC_AFCC_Data_Generator</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>XC_AFCC_Scenario_Picker</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
 </PermissionSet>
