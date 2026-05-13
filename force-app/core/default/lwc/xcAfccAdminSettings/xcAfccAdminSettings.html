@@ -8,8 +8,8 @@
       <section class="section">
         <div class="section-header">
           <div>
-            <h2>Environment and Configuration</h2>
-            <p>Review install context and core feature availability. Use Setup for actions.</p>
+            <h2>Environment</h2>
+            <p>Review install context and core feature availability.</p>
           </div>
           <a href="/lightning/n/XC_AFCC_Setup">Open Setup</a>
         </div>
@@ -42,6 +42,102 @@
             </div>
           </dl>
         </template>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Cost Settings</h2>
+            <p>Current AFCC billing, rate, allocation, and fallback settings.</p>
+          </div>
+          <a href="/lightning/o/XC_AFCC_Org_Config__c/list">Open Org Config</a>
+        </div>
+
+        <template if:true={hasConfig}>
+          <dl class="metrics">
+            <div>
+              <dt>Billing Model</dt>
+              <dd>{billingModel}</dd>
+            </div>
+            <div>
+              <dt>Allocation Method</dt>
+              <dd>{allocationMethod}</dd>
+            </div>
+            <div>
+              <dt>Contract Credit Rate</dt>
+              <dd>{contractCreditRate}</dd>
+            </div>
+            <div>
+              <dt>Contract Conversation Rate</dt>
+              <dd>{contractConversationRate}</dd>
+            </div>
+            <div>
+              <dt>Default Credit Rate</dt>
+              <dd>{defaultCreditRate}</dd>
+            </div>
+            <div>
+              <dt>Default Conversation Rate</dt>
+              <dd>{defaultConversationRate}</dd>
+            </div>
+            <div>
+              <dt>Install Mode</dt>
+              <dd>{installMode}</dd>
+            </div>
+            <div>
+              <dt>CSV Fallback</dt>
+              <dd>{csvStatus}</dd>
+            </div>
+          </dl>
+        </template>
+
+        <template if:false={hasConfig}>
+          <div class="empty-state">
+            <strong>No configuration record found.</strong>
+            <span>Create the default configuration from Setup.</span>
+          </div>
+        </template>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Demo Guard</h2>
+            <p>Customer sandbox override state for Demo Harness access.</p>
+          </div>
+        </div>
+
+        <dl class="metrics">
+          <div>
+            <dt>Override Enabled</dt>
+            <dd>{demoOverrideEnabled}</dd>
+          </div>
+          <div>
+            <dt>Override Expires</dt>
+            <dd>{demoOverrideExpires}</dd>
+          </div>
+          <div>
+            <dt>Override Reason</dt>
+            <dd>{demoOverrideReason}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Admin Records</h2>
+            <p>Internal AFCC records are grouped here instead of the primary navigation.</p>
+          </div>
+        </div>
+
+        <div class="admin-links">
+          <a href="/lightning/o/XC_AFCC_Cost_Ledger__c/list">Cost Ledger</a>
+          <a href="/lightning/o/XC_AFCC_Usage_Staging__c/list">Usage Staging</a>
+          <a href="/lightning/o/XC_AFCC_Import_Run__c/list">Import Runs</a>
+          <a href="/lightning/o/XC_AFCC_Data_Health_Check__c/list">Data Health Checks</a>
+          <a href="/lightning/o/XC_AFCC_Org_Config__c/list">Org Config</a>
+          <a href="/lightning/o/XC_AFCC_Audit_Log__c/list">Audit Logs</a>
+        </div>
       </section>
     </div>
   </lightning-card>

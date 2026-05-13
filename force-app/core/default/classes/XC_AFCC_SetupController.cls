@@ -38,8 +38,21 @@ public with sharing class XC_AFCC_SetupController {
     @AuraEnabled(cacheable=true)
     public static Map<String, Object> getSetupState() {
         Map<String, Object> state = new Map<String, Object>();
+        List<XC_AFCC_Org_Config__c> configs = [
+            SELECT Id, Name, XC_AFCC_Org_Id__c, XC_AFCC_Org_Name__c, XC_AFCC_Is_Sandbox__c,
+                   XC_AFCC_Install_Mode__c, XC_AFCC_Billing_Model__c,
+                   XC_AFCC_Contract_Credit_Rate__c, XC_AFCC_Contract_Conversation_Rate__c,
+                   XC_AFCC_Default_Credit_Rate__c, XC_AFCC_Default_Conversation_Rate__c,
+                   XC_AFCC_Allocation_Method__c, XC_AFCC_Csv_Import_Enabled__c,
+                   XC_AFCC_Demo_Override_Enabled__c, XC_AFCC_Demo_Override_Expires_On__c,
+                   XC_AFCC_Demo_Override_Reason__c
+            FROM XC_AFCC_Org_Config__c
+            ORDER BY CreatedDate ASC
+            LIMIT 1
+        ];
         state.put('environment', XC_AFCC_EnvironmentService.getEnvironmentInfo());
         state.put('configCount', [SELECT COUNT() FROM XC_AFCC_Org_Config__c]);
+        state.put('config', configs.isEmpty() ? null : configs[0]);
         state.put('csvImportAvailable', false);
         state.put('csvImportFallbackOnly', true);
         return state;

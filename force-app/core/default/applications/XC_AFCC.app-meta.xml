@@ -13,11 +13,5 @@
     <tabs>XC_AFCC_Case_Explorer</tabs>
     <tabs>XC_AFCC_Data_Health</tabs>
     <tabs>XC_AFCC_Admin_Settings</tabs>
-    <tabs>XC_AFCC_Cost_Ledger__c</tabs>
-    <tabs>XC_AFCC_Usage_Staging__c</tabs>
-    <tabs>XC_AFCC_Import_Run__c</tabs>
-    <tabs>XC_AFCC_Data_Health_Check__c</tabs>
-    <tabs>XC_AFCC_Org_Config__c</tabs>
-    <tabs>XC_AFCC_Audit_Log__c</tabs>
     <uiType>Lightning</uiType>
 </CustomApplication>
