@@ -11,27 +11,27 @@
             <value>
                 <fullName>DEV</fullName>
                 <default>false</default>
-                <label>DEV</label>
+                <label>Development</label>
             </value>
             <value>
                 <fullName>DEMO</fullName>
                 <default>false</default>
-                <label>DEMO</label>
+                <label>Demo</label>
             </value>
             <value>
                 <fullName>TEST</fullName>
                 <default>false</default>
-                <label>TEST</label>
+                <label>Test</label>
             </value>
             <value>
                 <fullName>SANDBOX</fullName>
                 <default>false</default>
-                <label>SANDBOX</label>
+                <label>Sandbox</label>
             </value>
             <value>
                 <fullName>PRODUCTION</fullName>
                 <default>false</default>
-                <label>PRODUCTION</label>
+                <label>Production</label>
             </value>
         </valueSetDefinition>
     </valueSet>

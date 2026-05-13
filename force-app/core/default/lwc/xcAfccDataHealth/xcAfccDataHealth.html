@@ -44,7 +44,7 @@
               <dd>{summary.unallocatedUsagePercent}</dd>
             </div>
           </dl>
-          <lightning-datatable key-field="name" data={summary.checks} columns={columns} hide-checkbox-column></lightning-datatable>
+          <lightning-datatable key-field="name" data={healthRows} columns={columns} hide-checkbox-column></lightning-datatable>
         </template>
 
         <template if:false={summary}>

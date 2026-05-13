@@ -38,10 +38,10 @@ public with sharing class XC_AFCC_DataHealthService {
         XC_AFCC_SetupController.ensureDefaultConfig();
         HealthSummary summary = calculate();
         XC_AFCC_NativeUsageService.NativeReadiness readiness = XC_AFCC_NativeUsageService.getReadiness();
-        summary.checks.add(new CheckResult('Native Source Readiness', readiness.result == 'MISSING_NATIVE_SOURCE' ? 'WARN' : 'PASS', readiness.result, readiness.nativeSourceRows));
+        summary.checks.add(new CheckResult('Native Source Readiness', readiness.result == 'MISSING_NATIVE_SOURCE' ? 'WARN' : 'PASS', displayValue(readiness.result), readiness.nativeSourceRows));
         if (summary.ledgerRows == 0) {
             summary.result = readiness.result;
-            summary.checks.add(new CheckResult('Analysis Ready', 'WARN', 'NO - Native Agentforce/Service Cloud data has not been synced yet', 0));
+            summary.checks.add(new CheckResult('Analysis Ready', 'WARN', 'Native Agentforce or Service Cloud data has not been synced yet.', 0));
         } else if (summary.result == 'PASS' || summary.result == 'WARN') {
             summary.checks.add(new CheckResult('Analysis Ready', 'PASS', 'Usage data is available.', 1));
         }
@@ -108,5 +108,14 @@ public with sharing class XC_AFCC_DataHealthService {
         if (!rows.isEmpty()) {
             insert rows;
         }
+    }
+
+    private static String displayValue(String value) {
+        if (value == 'ANALYSIS_READY') return 'Analysis Ready';
+        if (value == 'NATIVE_READY') return 'Native Ready';
+        if (value == 'READY_FOR_NATIVE_DATA') return 'Ready for Native Data';
+        if (value == 'MISSING_NATIVE_SOURCE') return 'Missing Native Source';
+        if (value == 'MISSING_SERVICE_CLOUD_DATA') return 'Missing Service Cloud Data';
+        return value;
     }
 }

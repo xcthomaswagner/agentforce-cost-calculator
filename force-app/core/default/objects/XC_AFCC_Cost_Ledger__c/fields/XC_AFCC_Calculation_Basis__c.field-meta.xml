@@ -11,32 +11,32 @@
             <value>
                 <fullName>ACTUAL</fullName>
                 <default>false</default>
-                <label>ACTUAL</label>
+                <label>Actual</label>
             </value>
             <value>
                 <fullName>IMPORTED</fullName>
                 <default>false</default>
-                <label>IMPORTED</label>
+                <label>Imported</label>
             </value>
             <value>
                 <fullName>SYNTHETIC</fullName>
                 <default>false</default>
-                <label>SYNTHETIC</label>
+                <label>Synthetic</label>
             </value>
             <value>
                 <fullName>ESTIMATED</fullName>
                 <default>false</default>
-                <label>ESTIMATED</label>
+                <label>Estimated</label>
             </value>
             <value>
                 <fullName>ALLOCATED</fullName>
                 <default>false</default>
-                <label>ALLOCATED</label>
+                <label>Allocated</label>
             </value>
             <value>
                 <fullName>INCOMPLETE</fullName>
                 <default>false</default>
-                <label>INCOMPLETE</label>
+                <label>Incomplete</label>
             </value>
         </valueSetDefinition>
     </valueSet>

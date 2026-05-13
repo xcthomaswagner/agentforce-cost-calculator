@@ -11,22 +11,22 @@
             <value>
                 <fullName>DIRECT</fullName>
                 <default>false</default>
-                <label>DIRECT</label>
+                <label>Direct</label>
             </value>
             <value>
                 <fullName>IMPORTED</fullName>
                 <default>false</default>
-                <label>IMPORTED</label>
+                <label>Imported</label>
             </value>
             <value>
                 <fullName>SYNTHETIC</fullName>
                 <default>false</default>
-                <label>SYNTHETIC</label>
+                <label>Synthetic</label>
             </value>
             <value>
                 <fullName>INFERRED</fullName>
                 <default>false</default>
-                <label>INFERRED</label>
+                <label>Inferred</label>
             </value>
         </valueSetDefinition>
     </valueSet>

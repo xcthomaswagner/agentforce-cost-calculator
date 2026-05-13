@@ -11,27 +11,27 @@
             <value>
                 <fullName>PENDING</fullName>
                 <default>false</default>
-                <label>PENDING</label>
+                <label>Pending</label>
             </value>
             <value>
                 <fullName>RUNNING</fullName>
                 <default>false</default>
-                <label>RUNNING</label>
+                <label>Running</label>
             </value>
             <value>
                 <fullName>COMPLETED</fullName>
                 <default>false</default>
-                <label>COMPLETED</label>
+                <label>Completed</label>
             </value>
             <value>
                 <fullName>FAILED</fullName>
                 <default>false</default>
-                <label>FAILED</label>
+                <label>Failed</label>
             </value>
             <value>
                 <fullName>COMPLETED_WITH_ERRORS</fullName>
                 <default>false</default>
-                <label>COMPLETED_WITH_ERRORS</label>
+                <label>Completed with Errors</label>
             </value>
         </valueSetDefinition>
     </valueSet>

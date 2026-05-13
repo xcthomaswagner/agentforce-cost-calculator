@@ -48,7 +48,7 @@
           </dl>
 
           <template if:true={hasUsage}>
-            <lightning-datatable key-field="groupValue" data={summary.costByQueue} columns={columns} hide-checkbox-column></lightning-datatable>
+            <lightning-datatable key-field="groupValue" data={queueRows} columns={columns} hide-checkbox-column></lightning-datatable>
           </template>
           <template if:false={hasUsage}>
             <div class="empty-state">

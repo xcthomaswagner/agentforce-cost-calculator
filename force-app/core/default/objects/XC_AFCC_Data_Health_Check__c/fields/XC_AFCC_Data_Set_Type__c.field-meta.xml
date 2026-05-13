@@ -11,17 +11,17 @@
             <value>
                 <fullName>SYNTHETIC</fullName>
                 <default>false</default>
-                <label>SYNTHETIC</label>
+                <label>Synthetic</label>
             </value>
             <value>
                 <fullName>IMPORTED</fullName>
                 <default>false</default>
-                <label>IMPORTED</label>
+                <label>Imported</label>
             </value>
             <value>
                 <fullName>LIVE</fullName>
                 <default>false</default>
-                <label>LIVE</label>
+                <label>Live</label>
             </value>
         </valueSetDefinition>
     </valueSet>

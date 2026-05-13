@@ -11,22 +11,22 @@
             <value>
                 <fullName>CSV_IMPORT</fullName>
                 <default>false</default>
-                <label>CSV_IMPORT</label>
+                <label>CSV Import</label>
             </value>
             <value>
                 <fullName>SYNTHETIC</fullName>
                 <default>false</default>
-                <label>SYNTHETIC</label>
+                <label>Synthetic</label>
             </value>
             <value>
                 <fullName>LIVE</fullName>
                 <default>false</default>
-                <label>LIVE</label>
+                <label>Live</label>
             </value>
             <value>
                 <fullName>MANUAL</fullName>
                 <default>false</default>
-                <label>MANUAL</label>
+                <label>Manual</label>
             </value>
         </valueSetDefinition>
     </valueSet>

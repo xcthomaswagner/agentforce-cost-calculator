@@ -11,22 +11,22 @@
             <value>
                 <fullName>PRIMARY_CASE</fullName>
                 <default>false</default>
-                <label>PRIMARY_CASE</label>
+                <label>Primary Case</label>
             </value>
             <value>
                 <fullName>EVEN_SPLIT</fullName>
                 <default>false</default>
-                <label>EVEN_SPLIT</label>
+                <label>Even Split</label>
             </value>
             <value>
                 <fullName>IMPORTED</fullName>
                 <default>false</default>
-                <label>IMPORTED</label>
+                <label>Imported</label>
             </value>
             <value>
                 <fullName>NONE</fullName>
                 <default>false</default>
-                <label>NONE</label>
+                <label>None</label>
             </value>
         </valueSetDefinition>
     </valueSet>

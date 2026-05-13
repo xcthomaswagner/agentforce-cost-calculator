@@ -11,27 +11,27 @@
             <value>
                 <fullName>RESOLVED</fullName>
                 <default>false</default>
-                <label>RESOLVED</label>
+                <label>Resolved</label>
             </value>
             <value>
                 <fullName>DEFERRED</fullName>
                 <default>false</default>
-                <label>DEFERRED</label>
+                <label>Deferred</label>
             </value>
             <value>
                 <fullName>ESCALATED</fullName>
                 <default>false</default>
-                <label>ESCALATED</label>
+                <label>Escalated</label>
             </value>
             <value>
                 <fullName>ABANDONED</fullName>
                 <default>false</default>
-                <label>ABANDONED</label>
+                <label>Abandoned</label>
             </value>
             <value>
                 <fullName>UNKNOWN</fullName>
                 <default>false</default>
-                <label>UNKNOWN</label>
+                <label>Unknown</label>
             </value>
         </valueSetDefinition>
     </valueSet>

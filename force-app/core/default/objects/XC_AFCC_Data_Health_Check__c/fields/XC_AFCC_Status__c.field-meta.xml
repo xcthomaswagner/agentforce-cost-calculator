@@ -11,22 +11,22 @@
             <value>
                 <fullName>PASS</fullName>
                 <default>false</default>
-                <label>PASS</label>
+                <label>Pass</label>
             </value>
             <value>
                 <fullName>WARN</fullName>
                 <default>false</default>
-                <label>WARN</label>
+                <label>Warning</label>
             </value>
             <value>
                 <fullName>FAIL</fullName>
                 <default>false</default>
-                <label>FAIL</label>
+                <label>Fail</label>
             </value>
             <value>
                 <fullName>INFO</fullName>
                 <default>false</default>
-                <label>INFO</label>
+                <label>Info</label>
             </value>
         </valueSetDefinition>
     </valueSet>

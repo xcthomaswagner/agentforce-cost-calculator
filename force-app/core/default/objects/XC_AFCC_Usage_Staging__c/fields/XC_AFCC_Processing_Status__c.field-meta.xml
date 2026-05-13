@@ -11,22 +11,22 @@
             <value>
                 <fullName>PENDING</fullName>
                 <default>false</default>
-                <label>PENDING</label>
+                <label>Pending</label>
             </value>
             <value>
                 <fullName>PROCESSED</fullName>
                 <default>false</default>
-                <label>PROCESSED</label>
+                <label>Processed</label>
             </value>
             <value>
                 <fullName>FAILED</fullName>
                 <default>false</default>
-                <label>FAILED</label>
+                <label>Failed</label>
             </value>
             <value>
                 <fullName>SKIPPED</fullName>
                 <default>false</default>
-                <label>SKIPPED</label>
+                <label>Skipped</label>
             </value>
         </valueSetDefinition>
     </valueSet>

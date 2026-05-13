@@ -11,17 +11,17 @@
             <value>
                 <fullName>FLEX_CREDITS</fullName>
                 <default>false</default>
-                <label>FLEX_CREDITS</label>
+                <label>Flex Credits</label>
             </value>
             <value>
                 <fullName>CONVERSATIONS</fullName>
                 <default>false</default>
-                <label>CONVERSATIONS</label>
+                <label>Conversations</label>
             </value>
             <value>
                 <fullName>UNKNOWN</fullName>
                 <default>false</default>
-                <label>UNKNOWN</label>
+                <label>Unknown</label>
             </value>
         </valueSetDefinition>
     </valueSet>

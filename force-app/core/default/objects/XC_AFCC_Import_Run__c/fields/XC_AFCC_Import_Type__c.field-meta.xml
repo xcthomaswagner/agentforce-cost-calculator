@@ -21,12 +21,12 @@
             <value>
                 <fullName>NATIVE_SYNC</fullName>
                 <default>false</default>
-                <label>NATIVE_SYNC</label>
+                <label>Native Sync</label>
             </value>
             <value>
                 <fullName>MANUAL</fullName>
                 <default>false</default>
-                <label>MANUAL</label>
+                <label>Manual</label>
             </value>
         </valueSetDefinition>
     </valueSet>

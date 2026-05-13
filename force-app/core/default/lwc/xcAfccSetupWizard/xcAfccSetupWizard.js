@@ -7,6 +7,44 @@ import runDataHealth from '@salesforce/apex/XC_AFCC_DataHealthService.runDataHea
 import getNativeReadiness from '@salesforce/apex/XC_AFCC_NativeUsageService.getReadiness';
 import syncNativeUsage from '@salesforce/apex/XC_AFCC_NativeUsageService.syncNativeUsage';
 
+const VALUE_LABELS = {
+  ANALYSIS_READY: 'Analysis Ready',
+  NATIVE_READY: 'Native Ready',
+  READY_FOR_NATIVE_DATA: 'Ready for Native Data',
+  MISSING_NATIVE_SOURCE: 'Missing Native Source',
+  MISSING_SERVICE_CLOUD_DATA: 'Missing Service Cloud Data',
+  PASS: 'Pass',
+  WARN: 'Warning',
+  FAIL: 'Fail',
+  INFO: 'Info',
+  COMPLETED: 'Completed',
+  COMPLETED_WITH_ERRORS: 'Completed with Errors',
+  RUNNING: 'Running',
+  FAILED: 'Failed',
+  PENDING: 'Pending',
+  FLEX_CREDITS: 'Flex Credits',
+  PRIMARY_CASE: 'Primary Case',
+  EVEN_SPLIT: 'Even Split',
+  CSV_IMPORT: 'CSV Import'
+};
+
+function friendlyValue(value) {
+  if (!value) {
+    return value;
+  }
+  if (VALUE_LABELS[value]) {
+    return VALUE_LABELS[value];
+  }
+  if (!String(value).includes('_')) {
+    return value;
+  }
+  return String(value)
+    .toLowerCase()
+    .split('_')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
 export default class XcAfccSetupWizard extends LightningElement {
   state;
   summary;
@@ -18,8 +56,8 @@ export default class XcAfccSetupWizard extends LightningElement {
 
   healthColumns = [
     { label: 'Check', fieldName: 'name' },
-    { label: 'Status', fieldName: 'status' },
-    { label: 'Detail', fieldName: 'detail' }
+    { label: 'Status', fieldName: 'statusLabel' },
+    { label: 'Detail', fieldName: 'detailLabel' }
   ];
 
   queueColumns = [
@@ -111,11 +149,15 @@ export default class XcAfccSetupWizard extends LightningElement {
   }
 
   get healthResult() {
+    return friendlyValue(this.rawHealthResult);
+  }
+
+  get rawHealthResult() {
     return this.health && this.health.result ? this.health.result : 'Not Run';
   }
 
   get healthBadgeClass() {
-    const result = this.healthResult;
+    const result = this.rawHealthResult;
     if (result === 'PASS') {
       return 'status-badge pass';
     }
@@ -133,11 +175,15 @@ export default class XcAfccSetupWizard extends LightningElement {
   }
 
   get nativeResult() {
+    return friendlyValue(this.rawNativeResult);
+  }
+
+  get rawNativeResult() {
     return this.nativeReadiness && this.nativeReadiness.result ? this.nativeReadiness.result : 'Not Checked';
   }
 
   get nativeBadgeClass() {
-    const result = this.nativeResult;
+    const result = this.rawNativeResult;
     if (result === 'ANALYSIS_READY') {
       return 'status-badge pass';
     }
@@ -165,5 +211,26 @@ export default class XcAfccSetupWizard extends LightningElement {
 
   get hasNativeMessages() {
     return this.nativeMessages.length > 0;
+  }
+
+  get healthRows() {
+    const checks = this.health && this.health.checks ? this.health.checks : [];
+    return checks.map((check) => ({
+      ...check,
+      statusLabel: friendlyValue(check.status),
+      detailLabel: friendlyValue(check.detail)
+    }));
+  }
+
+  get nativeSyncStatus() {
+    return this.nativeSyncResult ? friendlyValue(this.nativeSyncResult.status) : '';
+  }
+
+  get queueRows() {
+    const rows = this.summary && this.summary.costByQueue ? this.summary.costByQueue : [];
+    return rows.map((row) => ({
+      ...row,
+      groupValue: friendlyValue(row.groupValue)
+    }));
   }
 }

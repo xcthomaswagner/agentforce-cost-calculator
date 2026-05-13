@@ -11,17 +11,17 @@
             <value>
                 <fullName>HIGH</fullName>
                 <default>false</default>
-                <label>HIGH</label>
+                <label>High</label>
             </value>
             <value>
                 <fullName>MEDIUM</fullName>
                 <default>false</default>
-                <label>MEDIUM</label>
+                <label>Medium</label>
             </value>
             <value>
                 <fullName>LOW</fullName>
                 <default>false</default>
-                <label>LOW</label>
+                <label>Low</label>
             </value>
         </valueSetDefinition>
     </valueSet>

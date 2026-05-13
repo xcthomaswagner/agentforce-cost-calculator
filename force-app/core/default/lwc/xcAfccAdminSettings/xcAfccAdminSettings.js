@@ -1,6 +1,38 @@
 import { LightningElement } from 'lwc';
 import getSetupState from '@salesforce/apex/XC_AFCC_SetupController.getSetupState';
 
+const VALUE_LABELS = {
+  FLEX_CREDITS: 'Flex Credits',
+  CONVERSATIONS: 'Conversations',
+  UNKNOWN: 'Unknown',
+  PRIMARY_CASE: 'Primary Case',
+  EVEN_SPLIT: 'Even Split',
+  IMPORTED: 'Imported',
+  NONE: 'None',
+  DEV: 'Development',
+  DEMO: 'Demo',
+  TEST: 'Test',
+  SANDBOX: 'Sandbox',
+  PRODUCTION: 'Production'
+};
+
+function friendlyValue(value) {
+  if (!value) {
+    return value;
+  }
+  if (VALUE_LABELS[value]) {
+    return VALUE_LABELS[value];
+  }
+  if (!String(value).includes('_')) {
+    return value;
+  }
+  return String(value)
+    .toLowerCase()
+    .split('_')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
 export default class XcAfccAdminSettings extends LightningElement {
   state;
 
@@ -45,11 +77,11 @@ export default class XcAfccAdminSettings extends LightningElement {
   }
 
   get billingModel() {
-    return this.config.XC_AFCC_Billing_Model__c || 'Not Set';
+    return friendlyValue(this.config.XC_AFCC_Billing_Model__c) || 'Not Set';
   }
 
   get allocationMethod() {
-    return this.config.XC_AFCC_Allocation_Method__c || 'Not Set';
+    return friendlyValue(this.config.XC_AFCC_Allocation_Method__c) || 'Not Set';
   }
 
   get contractCreditRate() {
@@ -69,7 +101,7 @@ export default class XcAfccAdminSettings extends LightningElement {
   }
 
   get installMode() {
-    return this.config.XC_AFCC_Install_Mode__c || 'Not Set';
+    return friendlyValue(this.config.XC_AFCC_Install_Mode__c) || 'Not Set';
   }
 
   get demoOverrideEnabled() {
