@@ -328,7 +328,6 @@ Core LWCs:
 - `xcAfccAdminSettings`
 
 Demo Harness LWCs:
-- `xcAfccDemoLauncher`
 - `xcAfccSyntheticDataGenerator`
 - `xcAfccDemoScenarioPicker`
 

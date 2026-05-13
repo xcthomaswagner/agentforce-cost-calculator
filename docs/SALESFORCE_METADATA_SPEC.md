@@ -279,7 +279,6 @@ Validates the expected scenario outcome.
 
 ### Demo Harness
 
-- `xcAfccDemoLauncher`
 - `xcAfccSyntheticDataGenerator`
 - `xcAfccDemoScenarioPicker`
 

@@ -3,11 +3,10 @@
     <brand><headerColor>#335C67</headerColor></brand>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
-    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavPersonalizationDisabled>true</isNavPersonalizationDisabled>
     <label>XC AFCC Demo Harness</label>
     <navType>Standard</navType>
     <tabs>standard-home</tabs>
-    <tabs>XC_AFCC_Demo_Launcher</tabs>
     <tabs>XC_AFCC_Data_Generator</tabs>
     <tabs>XC_AFCC_Scenario_Picker</tabs>
     <tabs>XC_AFCC_Cost_Dashboard</tabs>

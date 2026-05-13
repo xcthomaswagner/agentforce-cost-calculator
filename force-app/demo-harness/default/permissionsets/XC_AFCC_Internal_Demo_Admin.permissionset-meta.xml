@@ -34,10 +34,6 @@
     </customPermissions>
     <label>XC AFCC Internal Demo Admin</label>
     <tabSettings>
-        <tab>XC_AFCC_Demo_Launcher</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
         <tab>XC_AFCC_Data_Generator</tab>
         <visibility>Visible</visibility>
     </tabSettings>
