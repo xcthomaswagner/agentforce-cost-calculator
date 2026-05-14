@@ -12,7 +12,8 @@ const defaults = {
   oauthConsumerId: process.env.XC_AFCC_OAUTH_CONSUMER_ID || '',
   apiHost: process.env.XC_AFCC_AGENT_API_HOST || 'https://api.salesforce.com',
   delayMs: Number(process.env.XC_AFCC_AGENT_API_DELAY_MS || 250),
-  turns: Number(process.env.XC_AFCC_AGENT_API_TURNS || 2)
+  turns: Number(process.env.XC_AFCC_AGENT_API_TURNS || 2),
+  concurrency: Number(process.env.XC_AFCC_AGENT_API_CONCURRENCY || 1)
 };
 
 function parseArgs(argv) {
@@ -33,6 +34,7 @@ function parseArgs(argv) {
     else if (arg === '--api-host') args.apiHost = next();
     else if (arg === '--delay-ms') args.delayMs = Number(next());
     else if (arg === '--turns') args.turns = Number(next());
+    else if (arg === '--concurrency') args.concurrency = Number(next());
     else if (arg === '--help') {
       printUsage();
       process.exit(0);
@@ -50,7 +52,8 @@ function printUsage() {
     --agent-id 0Xx... \\
     --eca-id 0xI... \\
     --consumer-id 888... \\
-    --count 150
+    --count 150 \\
+    --concurrency 8
 
 Environment variables from scripts/mvp/03-run-prod-like-agentforce-sandbox.sh are also supported.
 
@@ -67,6 +70,52 @@ function sfJson(args) {
     throw new Error(parsed.message || `Salesforce CLI failed: sf ${args.join(' ')}`);
   }
   return parsed.result;
+}
+
+function parseOauthLink(value) {
+  if (!value || !String(value).includes(':')) return value || '';
+  return String(value).split(':').pop();
+}
+
+function resolveOauthConsumerId(targetOrg, externalClientAppId, suppliedId) {
+  if (!suppliedId) return '';
+  if (String(suppliedId).startsWith('888')) return suppliedId;
+
+  const escapedAppId = soqlString(externalClientAppId);
+  const escapedSuppliedId = soqlString(suppliedId);
+  const settingsQuery = [
+    'SELECT Id, OauthLink',
+    'FROM ExtlClntAppOauthSettings',
+    `WHERE Id = '${escapedSuppliedId}' OR ExternalClientApplicationId = '${escapedAppId}'`,
+    'ORDER BY LastModifiedDate DESC',
+    'LIMIT 1'
+  ].join(' ');
+  const settingsRows = sfJson(['data', 'query', '--target-org', targetOrg, '--query', settingsQuery]).records || [];
+  if (settingsRows.length > 0 && settingsRows[0].OauthLink) {
+    return parseOauthLink(settingsRows[0].OauthLink);
+  }
+
+  const consumerQuery = [
+    'SELECT ExtlClntAppOauthSettingsId',
+    'FROM ExtlClntAppOauthConsumer',
+    `WHERE Id = '${escapedSuppliedId}'`,
+    'LIMIT 1'
+  ].join(' ');
+  const consumerRows = sfJson(['data', 'query', '--target-org', targetOrg, '--query', consumerQuery]).records || [];
+  if (consumerRows.length > 0 && consumerRows[0].ExtlClntAppOauthSettingsId) {
+    const linkedSettingsQuery = [
+      'SELECT OauthLink',
+      'FROM ExtlClntAppOauthSettings',
+      `WHERE Id = '${soqlString(consumerRows[0].ExtlClntAppOauthSettingsId)}'`,
+      'LIMIT 1'
+    ].join(' ');
+    const linkedSettingsRows = sfJson(['data', 'query', '--target-org', targetOrg, '--query', linkedSettingsQuery]).records || [];
+    if (linkedSettingsRows.length > 0 && linkedSettingsRows[0].OauthLink) {
+      return parseOauthLink(linkedSettingsRows[0].OauthLink);
+    }
+  }
+
+  return suppliedId;
 }
 
 function soqlString(value) {
@@ -110,6 +159,69 @@ function buildUtterances(item, turnCount) {
   return messages.slice(0, Math.max(1, Math.min(turnCount, messages.length)));
 }
 
+async function runConversation({ args, oauthToken, instanceUrl, item, index }) {
+  const externalSessionKey = `afcc-${args.runKey || 'run'}-${item.caseNumber}-${index + 1}`;
+  const session = await requestJson(`${args.apiHost}/einstein/ai-agent/v1/agents/${args.agentId}/sessions`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${oauthToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      externalSessionKey,
+      instanceConfig: { endpoint: instanceUrl },
+      tz: 'America/Los_Angeles',
+      streamingCapabilities: { chunkTypes: ['Text'] },
+      bypassUser: true
+    })
+  });
+
+  const sessionId = session.sessionId;
+  const utterances = buildUtterances(item, args.turns);
+  const replies = [];
+  try {
+    for (let turn = 0; turn < utterances.length; turn += 1) {
+      const response = await requestJson(`${args.apiHost}/einstein/ai-agent/v1/sessions/${sessionId}/messages`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${oauthToken}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: {
+            sequenceId: Date.now() + turn,
+            type: 'Text',
+            text: utterances[turn]
+          },
+          variables: []
+        })
+      });
+      replies.push(...(response.messages || []).map((message) => ({
+        type: message.type,
+        message: message.message || ''
+      })));
+      await sleep(args.delayMs);
+    }
+  } finally {
+    await requestJson(`${args.apiHost}/einstein/ai-agent/v1/sessions/${sessionId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${oauthToken}`,
+        'x-session-end-reason': 'UserRequest'
+      }
+    });
+  }
+
+  console.log(`Conversation ${index + 1}/${args.count}: case ${item.caseNumber} session ${sessionId}`);
+  return {
+    caseNumber: item.caseNumber,
+    sessionId,
+    turns: utterances.length,
+    firstReply: replies.find((reply) => reply.message)?.message || ''
+  };
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (!args.targetOrg) throw new Error('--target-org is required');
@@ -117,10 +229,14 @@ async function main() {
   if (!args.externalClientAppId) throw new Error('--eca-id or XC_AFCC_ECA_ID is required');
   if (!args.oauthConsumerId) throw new Error('--consumer-id or XC_AFCC_OAUTH_CONSUMER_ID is required');
   if (!Number.isInteger(args.count) || args.count < 1) throw new Error('--count must be a positive integer');
+  if (!Number.isInteger(args.concurrency) || args.concurrency < 1 || args.concurrency > 20) {
+    throw new Error('--concurrency must be an integer between 1 and 20');
+  }
 
   const org = sfJson(['org', 'display', '--target-org', args.targetOrg, '--verbose']);
   const instanceUrl = org.instanceUrl;
   const adminToken = org.accessToken;
+  const oauthConsumerId = resolveOauthConsumerId(args.targetOrg, args.externalClientAppId, args.oauthConsumerId);
   const prefix = args.caseSubjectPrefix || (args.runKey ? `AFCC Prod-Like ${args.runKey} Case` : 'AFCC Prod-Like');
   const query = [
     'SELECT Id, CaseNumber, Subject, Priority, Contact.Name, Contact.Email, Account.Name',
@@ -134,7 +250,7 @@ async function main() {
     throw new Error(`No seeded cases found with subject prefix: ${prefix}`);
   }
 
-  const credentialUrl = `${instanceUrl}/services/data/v64.0/apps/oauth/credentials/${args.externalClientAppId}/${args.oauthConsumerId}?part=keyandsecret`;
+  const credentialUrl = `${instanceUrl}/services/data/v64.0/apps/oauth/credentials/${args.externalClientAppId}/${oauthConsumerId}?part=keyandsecret`;
   const credentials = await requestJson(credentialUrl, {
     headers: { Authorization: `Bearer ${adminToken}`, Accept: 'application/json' }
   });
@@ -155,67 +271,16 @@ async function main() {
   if (!oauth.access_token) throw new Error('Client credentials token response did not include access_token');
 
   const results = [];
-  for (const [index, item] of caseRows.entries()) {
-    const externalSessionKey = `afcc-${args.runKey || 'run'}-${item.caseNumber}-${index + 1}`;
-    const session = await requestJson(`${args.apiHost}/einstein/ai-agent/v1/agents/${args.agentId}/sessions`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${oauth.access_token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        externalSessionKey,
-        instanceConfig: { endpoint: instanceUrl },
-        tz: 'America/Los_Angeles',
-        streamingCapabilities: { chunkTypes: ['Text'] },
-        bypassUser: true
-      })
-    });
-
-    const sessionId = session.sessionId;
-    const utterances = buildUtterances(item, args.turns);
-    const replies = [];
-    try {
-      for (let turn = 0; turn < utterances.length; turn += 1) {
-        const response = await requestJson(`${args.apiHost}/einstein/ai-agent/v1/sessions/${sessionId}/messages`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${oauth.access_token}`,
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            message: {
-              sequenceId: Date.now() + turn,
-              type: 'Text',
-              text: utterances[turn]
-            },
-            variables: []
-          })
-        });
-        replies.push(...(response.messages || []).map((message) => ({
-          type: message.type,
-          message: message.message || ''
-        })));
-        await sleep(args.delayMs);
-      }
-    } finally {
-      await requestJson(`${args.apiHost}/einstein/ai-agent/v1/sessions/${sessionId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${oauth.access_token}`,
-          'x-session-end-reason': 'UserRequest'
-        }
-      });
-    }
-
-    results.push({
-      caseNumber: item.caseNumber,
-      sessionId,
-      turns: utterances.length,
-      firstReply: replies.find((reply) => reply.message)?.message || ''
-    });
-    console.log(`Conversation ${index + 1}/${caseRows.length}: case ${item.caseNumber} session ${sessionId}`);
+  for (let start = 0; start < caseRows.length; start += args.concurrency) {
+    const batch = caseRows.slice(start, start + args.concurrency);
+    const batchResults = await Promise.all(batch.map((item, batchIndex) => runConversation({
+      args,
+      oauthToken: oauth.access_token,
+      instanceUrl,
+      item,
+      index: start + batchIndex
+    })));
+    results.push(...batchResults);
     await sleep(args.delayMs);
   }
 

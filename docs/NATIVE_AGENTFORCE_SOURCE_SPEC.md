@@ -23,13 +23,16 @@ Core Step 2 expects these objects in an Agentforce-enabled Service Cloud org:
 
 ## Optional Native Source Objects
 
-Core must detect and use these when available:
+Core must detect and use these billable/native usage anchors when available:
 
 - `MessagingSession`
 - `AgentWork`
 - `Conversation`
+- `ConversationDefinitionSession`
 
 The first release implementation may estimate usage units from session/work records when billing-grade usage units are not available directly in the object. Those rows must remain auditable through source object name, source record id, calculation basis, and raw payload.
+
+Agentforce API runs may create `ConversationDefinitionSession` and `ConversationDefinitionEventLog` rows without creating `MessagingSession` or `AgentWork` rows. Core treats the session row as the billable conversation anchor. `ConversationDefinitionEventLog` is supporting evidence only: Core can read it for case linkage where the customer utterance contains a case number, but it must not create one cost-ledger row per event log.
 
 ## Sync Output
 

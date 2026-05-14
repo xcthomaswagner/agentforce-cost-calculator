@@ -1,5 +1,11 @@
 public with sharing class XC_AFCC_NativeUsageService {
-    private static final List<String> SOURCE_OBJECTS = new List<String>{'MessagingSession', 'AgentWork', 'Conversation'};
+    private static final List<String> SOURCE_OBJECTS = new List<String>{
+        'MessagingSession',
+        'AgentWork',
+        'Conversation',
+        'ConversationDefinitionSession'
+    };
+    private static final String AGENTFORCE_EVENT_OBJECT = 'ConversationDefinitionEventLog';
 
     public class ObjectStatus {
         @AuraEnabled public String apiName;
@@ -75,6 +81,10 @@ public with sharing class XC_AFCC_NativeUsageService {
         Set<String> sourceIds = existingSourceIds();
         List<XC_AFCC_Usage_Staging__c> stagingRows = new List<XC_AFCC_Usage_Staging__c>();
         Map<Id, Case> casesById = loadCasesById();
+        Map<String, Case> casesByNumber = loadCasesByNumber();
+        Map<String, Id> caseIdByAgentforceSession = loadAgentforceCaseLinks(casesByNumber);
+        XC_AFCC_Org_Config__c config = XC_AFCC_SetupController.ensureDefaultConfig();
+        String billingModel = String.isBlank(config.XC_AFCC_Billing_Model__c) ? 'CONVERSATIONS' : config.XC_AFCC_Billing_Model__c;
 
         for (String objectName : SOURCE_OBJECTS) {
             if (stagingRows.size() >= rowLimit || !isObjectAccessible(objectName)) {
@@ -89,7 +99,7 @@ public with sharing class XC_AFCC_NativeUsageService {
                     continue;
                 }
                 try {
-                    XC_AFCC_Usage_Staging__c row = toStaging(run.Id, objectName, nativeRow, casesById);
+                    XC_AFCC_Usage_Staging__c row = toStaging(run.Id, objectName, nativeRow, casesById, casesByNumber, caseIdByAgentforceSession, billingModel);
                     stagingRows.add(row);
                     sourceIds.add(sourceId);
                 } catch (Exception ex) {
@@ -212,12 +222,45 @@ public with sharing class XC_AFCC_NativeUsageService {
         return casesById;
     }
 
+    private static Map<String, Case> loadCasesByNumber() {
+        Map<String, Case> casesByNumber = new Map<String, Case>();
+        if (!isObjectAccessible('Case')) {
+            return casesByNumber;
+        }
+        for (Case c : [SELECT Id, CaseNumber, AccountId, ContactId, OwnerId, Status FROM Case LIMIT 10000]) {
+            casesByNumber.put(c.CaseNumber, c);
+        }
+        return casesByNumber;
+    }
+
+    private static Map<String, Id> loadAgentforceCaseLinks(Map<String, Case> casesByNumber) {
+        Map<String, Id> links = new Map<String, Id>();
+        if (casesByNumber.isEmpty() || !isObjectAccessible(AGENTFORCE_EVENT_OBJECT)) {
+            return links;
+        }
+        for (SObject eventRow : queryNativeRows(AGENTFORCE_EVENT_OBJECT, 10000)) {
+            String parentId = directString(eventRow, 'ParentId');
+            if (String.isBlank(parentId)) {
+                continue;
+            }
+            String sourceText = String.join(new List<String>{
+                directString(eventRow, 'EventLabel'),
+                directString(eventRow, 'EventDetails')
+            }, ' ');
+            Id caseId = caseIdFromText(sourceText, casesByNumber);
+            if (caseId != null) {
+                links.put(parentId, caseId);
+            }
+        }
+        return links;
+    }
+
     private static List<SObject> queryNativeRows(String objectName, Integer limitSize) {
         Schema.DescribeSObjectResult describe = Schema.getGlobalDescribe().get(objectName).getDescribe();
         Map<String, Schema.SObjectField> fields = describe.fields.getMap();
         Set<String> selected = new Set<String>{'Id'};
         for (String fieldName : preferredFields(objectName)) {
-            if (fields.containsKey(fieldName) && fields.get(fieldName).getDescribe().isAccessible()) {
+            if (fields.containsKey(fieldName)) {
                 selected.add(fieldName);
             }
         }
@@ -235,46 +278,61 @@ public with sharing class XC_AFCC_NativeUsageService {
             'CaseId', 'Case__c', 'WorkItemId', 'RelatedToId', 'TargetObjectId',
             'ConversationId', 'MessagingSessionId', 'MessagingChannelId', 'ChannelType',
             'AgentName', 'AgentId', 'QueueName', 'ServiceChannelId', 'CloseDateTime', 'EndTime',
-            'StartTime', 'AcceptDateTime', 'HandleTime', 'HandleTimeSeconds'
+            'StartTime', 'AcceptDateTime', 'HandleTime', 'HandleTimeSeconds',
+            'ExternalSessionKey', 'SessionStartTime', 'SessionDuration', 'SessionStatus',
+            'SessionEndType', 'SessionTransferResult', 'WasSessionEngaged', 'HasErrorLogs',
+            'ConversationDefinitionId', 'ParentId', 'EventDateTime', 'EventLabel', 'EventDetails',
+            'LogType', 'LogLevel', 'Action', 'IsSuccessful', 'IntegrationName', 'IntegrationType',
+            'ChannelType', 'Mode'
         };
         return commonFields;
     }
 
-    private static XC_AFCC_Usage_Staging__c toStaging(Id runId, String objectName, SObject nativeRow, Map<Id, Case> casesById) {
-        Id caseId = findCaseId(nativeRow, casesById);
+    private static XC_AFCC_Usage_Staging__c toStaging(Id runId, String objectName, SObject nativeRow, Map<Id, Case> casesById, Map<String, Case> casesByNumber, Map<String, Id> caseIdByAgentforceSession, String billingModel) {
+        Id caseId = findCaseId(nativeRow, casesById, casesByNumber, caseIdByAgentforceSession);
         Case linkedCase = caseId == null ? null : casesById.get(caseId);
-        XC_AFCC_Org_Config__c config = XC_AFCC_SetupController.ensureDefaultConfig();
-        String billingModel = String.isBlank(config.XC_AFCC_Billing_Model__c) ? 'CONVERSATIONS' : config.XC_AFCC_Billing_Model__c;
+        Boolean isAgentforceSession = objectName == 'ConversationDefinitionSession';
+        Boolean isAgentforceEvent = objectName == 'ConversationDefinitionEventLog';
 
         XC_AFCC_Usage_Staging__c row = new XC_AFCC_Usage_Staging__c();
         row.XC_AFCC_Import_Run__c = runId;
         row.XC_AFCC_Source_System__c = 'LIVE';
         row.XC_AFCC_Source_Record_Id__c = objectName + ':' + String.valueOf(nativeRow.get('Id'));
         row.XC_AFCC_Billing_Model__c = billingModel;
-        row.XC_AFCC_Usage_Timestamp__c = firstDateTime(nativeRow, new List<String>{'CreatedDate', 'StartTime', 'AcceptDateTime', 'LastModifiedDate'});
+        row.XC_AFCC_Usage_Timestamp__c = firstDateTime(nativeRow, new List<String>{'SessionStartTime', 'EventDateTime', 'CreatedDate', 'StartTime', 'AcceptDateTime', 'LastModifiedDate'});
         row.XC_AFCC_Case_Id_Text__c = caseId == null ? null : String.valueOf(caseId);
         row.XC_AFCC_Case_Number__c = linkedCase == null ? null : linkedCase.CaseNumber;
-        row.XC_AFCC_Conversation_Id__c = firstString(nativeRow, new List<String>{'ConversationId', 'Id'});
+        row.XC_AFCC_Conversation_Id__c = isAgentforceSession
+            ? firstString(nativeRow, new List<String>{'ExternalSessionKey', 'Id'})
+            : firstString(nativeRow, new List<String>{'ConversationId', 'ParentId', 'ConversationDefinitionId', 'Id'});
+        if (String.isBlank(row.XC_AFCC_Conversation_Id__c)) {
+            row.XC_AFCC_Conversation_Id__c = firstString(nativeRow, new List<String>{'ExternalSessionKey', 'ConversationId', 'ParentId', 'ConversationDefinitionId', 'Id'});
+        }
         row.XC_AFCC_Messaging_Session_Id__c = objectName == 'MessagingSession' ? String.valueOf(nativeRow.get('Id')) : firstString(nativeRow, new List<String>{'MessagingSessionId'});
-        row.XC_AFCC_Agent_Name__c = firstString(nativeRow, new List<String>{'AgentName', 'UserId', 'OwnerId'});
-        row.XC_AFCC_Action_Name__c = objectName;
-        row.XC_AFCC_Topic__c = firstString(nativeRow, new List<String>{'Name'});
-        row.XC_AFCC_Channel__c = objectName == 'MessagingSession' ? 'Messaging' : 'Other';
+        row.XC_AFCC_Agent_Name__c = left(firstString(nativeRow, new List<String>{'AgentName', 'UserId', 'OwnerId', 'IntegrationName'}), 255);
+        row.XC_AFCC_Action_Name__c = left(isAgentforceSession ? 'Agentforce Session' : (isAgentforceEvent ? firstString(nativeRow, new List<String>{'Action', 'LogType'}) : objectName), 255);
+        row.XC_AFCC_Topic__c = left(firstString(nativeRow, new List<String>{'Name', 'EventLabel', 'SessionStatus', 'LogType'}), 255);
+        row.XC_AFCC_Channel__c = isAgentforceSession || isAgentforceEvent ? 'Other' : (objectName == 'MessagingSession' ? 'Messaging' : 'Other');
         row.XC_AFCC_Queue_Name__c = firstString(nativeRow, new List<String>{'QueueName', 'ServiceChannelId'});
-        row.XC_AFCC_Credits_Used__c = billingModel == 'FLEX_CREDITS' ? 1 : null;
-        row.XC_AFCC_Conversations_Used__c = billingModel == 'CONVERSATIONS' ? 1 : null;
+        row.XC_AFCC_Credits_Used__c = billingModel == 'FLEX_CREDITS' && (isAgentforceSession || !isAgentforceEvent) ? 1 : null;
+        row.XC_AFCC_Conversations_Used__c = billingModel == 'CONVERSATIONS' && !isAgentforceEvent ? 1 : null;
         row.XC_AFCC_Action_Count__c = 1;
         row.XC_AFCC_Case_Outcome__c = outcomeFor(linkedCase, nativeRow);
         row.XC_AFCC_Data_Set_Type__c = 'LIVE';
         row.XC_AFCC_Processing_Status__c = 'PENDING';
         row.XC_AFCC_Raw_Payload__c = JSON.serialize(new Map<String, Object>{
             'sourceObject' => objectName,
-            'sourceRecordId' => String.valueOf(nativeRow.get('Id'))
+            'sourceRecordId' => String.valueOf(nativeRow.get('Id')),
+            'conversationIdentifier' => row.XC_AFCC_Conversation_Id__c
         });
         return row;
     }
 
-    private static Id findCaseId(SObject nativeRow, Map<Id, Case> casesById) {
+    private static Id findCaseId(SObject nativeRow, Map<Id, Case> casesById, Map<String, Case> casesByNumber, Map<String, Id> caseIdByAgentforceSession) {
+        String rowId = directString(nativeRow, 'Id');
+        if (!String.isBlank(rowId) && caseIdByAgentforceSession.containsKey(rowId)) {
+            return caseIdByAgentforceSession.get(rowId);
+        }
         for (String fieldName : new List<String>{'CaseId', 'Case__c', 'WorkItemId', 'RelatedToId', 'TargetObjectId'}) {
             Object value = safeGet(nativeRow, fieldName);
             if (value == null) {
@@ -287,6 +345,27 @@ public with sharing class XC_AFCC_NativeUsageService {
                 }
             } catch (Exception ex) {
                 // Ignore non-ID values.
+            }
+        }
+        String sourceText = String.join(new List<String>{
+            directString(nativeRow, 'ExternalSessionKey'),
+            firstString(nativeRow, new List<String>{'EventLabel'}),
+            firstString(nativeRow, new List<String>{'EventDetails'})
+        }, ' ');
+        Id caseIdFromText = caseIdFromText(sourceText, casesByNumber);
+        if (caseIdFromText != null) {
+            return caseIdFromText;
+        }
+        return null;
+    }
+
+    private static Id caseIdFromText(String sourceText, Map<String, Case> casesByNumber) {
+        if (String.isBlank(sourceText) || casesByNumber.isEmpty()) {
+            return null;
+        }
+        for (String token : sourceText.split('[^A-Za-z0-9]+')) {
+            if (!String.isBlank(token) && casesByNumber.containsKey(token)) {
+                return casesByNumber.get(token).Id;
             }
         }
         return null;
@@ -304,12 +383,24 @@ public with sharing class XC_AFCC_NativeUsageService {
 
     private static String firstString(SObject row, List<String> fieldNames) {
         for (String fieldName : fieldNames) {
-            Object value = safeGet(row, fieldName);
-            if (value != null && !String.isBlank(String.valueOf(value))) {
-                return String.valueOf(value);
+            String value = directString(row, fieldName);
+            if (!String.isBlank(value)) {
+                return value;
             }
         }
         return null;
+    }
+
+    private static String directString(SObject row, String fieldName) {
+        Object value = safeGet(row, fieldName);
+        return value == null ? null : String.valueOf(value);
+    }
+
+    private static String left(String value, Integer maxLength) {
+        if (String.isBlank(value) || value.length() <= maxLength) {
+            return value;
+        }
+        return value.substring(0, maxLength);
     }
 
     private static Object safeGet(SObject row, String fieldName) {

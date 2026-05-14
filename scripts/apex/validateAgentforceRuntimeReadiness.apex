@@ -1,7 +1,7 @@
 Map<String, Object> result = new Map<String, Object>();
 Map<String, Schema.SObjectType> described = Schema.getGlobalDescribe();
 List<String> requiredObjects = new List<String>{'Account', 'Contact', 'Case'};
-List<String> runtimeObjects = new List<String>{'MessagingSession', 'AgentWork', 'Conversation'};
+List<String> runtimeObjects = new List<String>{'MessagingSession', 'AgentWork', 'Conversation', 'ConversationDefinitionSession'};
 
 for (String objectName : requiredObjects) {
     Boolean available = described.containsKey(objectName);

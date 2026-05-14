@@ -90,6 +90,8 @@ Step 3 is successful when:
 - Unallocated usage is visible and explainable.
 - Any estimated cost rows are auditable.
 
+Agent API is an acceptable production-like runner path when Enhanced Web Chat or BYOC is not the channel under test. In that path, Salesforce creates `ConversationDefinitionSession` and `ConversationDefinitionEventLog` runtime rows. The session rows are the billable analysis anchors; event logs are supporting linkage/audit evidence. Enhanced Web Chat or BYOC should additionally create messaging records such as `MessagingSession`, `Conversation`, and, depending on routing, `AgentWork`.
+
 ## Why This Exists
 
 The deterministic synthetic scratch-org path proves math and UX without Agentforce licensing. Step 3 proves production-like runtime behavior in an Agentforce-enabled sandbox.
