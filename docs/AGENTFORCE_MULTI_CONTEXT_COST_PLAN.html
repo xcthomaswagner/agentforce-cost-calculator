@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agentforce Cost Attribution Expansion Plan</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #182235;
+      --muted: #5f6b7a;
+      --line: #d8dde6;
+      --soft: #f4f6f9;
+      --blue: #0b5cab;
+      --green: #2e844a;
+      --amber: #a86403;
+      --red: #ba0517;
+      --card: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background: #f8fafc;
+      line-height: 1.45;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+    header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+    h1, h2, h3 { line-height: 1.18; margin: 0; }
+    h1 { font-size: 34px; letter-spacing: 0; }
+    h2 { font-size: 22px; margin-top: 34px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+    h3 { font-size: 17px; margin-top: 22px; }
+    p { margin: 10px 0; }
+    .lede {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 900px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--card);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .card h3 { margin-top: 0; }
+    .status {
+      display: inline-block;
+      margin-top: 8px;
+      border-radius: 4px;
+      padding: 3px 7px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .now { background: #eaf5ee; color: var(--green); }
+    .next { background: #eef4ff; color: var(--blue); }
+    .risk { background: #fff4e5; color: var(--amber); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border: 1px solid var(--line);
+      margin-top: 12px;
+    }
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      vertical-align: top;
+    }
+    th {
+      background: var(--soft);
+      font-weight: 700;
+    }
+    tr:last-child td { border-bottom: 0; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 4px;
+      font-size: 0.92em;
+    }
+    ul { margin: 8px 0 0 20px; padding: 0; }
+    li { margin: 5px 0; }
+    .callout {
+      border-left: 4px solid var(--blue);
+      background: #f3f8ff;
+      padding: 12px 14px;
+      margin: 14px 0;
+    }
+    .warning {
+      border-left-color: var(--amber);
+      background: #fff8ed;
+    }
+    .diagram {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+      background: #101828;
+      color: #eef4ff;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+    @media (max-width: 820px) {
+      main { padding: 22px 14px 40px; }
+      h1 { font-size: 28px; }
+      .grid { grid-template-columns: 1fr; }
+      table { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Agentforce Cost Attribution Expansion Plan</h1>
+    <p class="lede">Plan to expand the calculator from Service Cloud Case cost analysis into org-wide Agentforce cost attribution across many agent types, business objects, channels, teams, and workflows.</p>
+    <div class="meta">
+      <span class="pill">Prepared: May 14, 2026</span>
+      <span class="pill">Scope: Core product architecture</span>
+      <span class="pill">Deployment model: Salesforce-native</span>
+      <span class="pill">External services: none</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>Executive Summary</h2>
+    <p>The current calculator proves the first attribution path: Agentforce and service activity can be normalized into a cost ledger, linked to Cases, and explained in dashboards, reports, Case Explorer, and Agentforce Q&amp;A.</p>
+    <p>The next version should treat Case as one supported work target, not the product boundary. Agentforce is used for sales, service, commerce, field service, internal employee work, content, policy, and custom automations. The product should become an Agentforce cost attribution layer that answers: what was consumed, where it happened, who or what caused it, which business object it supported, and whether the cost is confidently allocated.</p>
+    <div class="callout">
+      <strong>Target product model:</strong> Digital Wallet and native Agentforce usage provide the commercial consumption signal; Salesforce business records provide operational context; the cost ledger joins them into explainable cost by agent, action, conversation, work item, team, channel, business process, and time.
+    </div>
+  </section>
+
+  <section>
+    <h2>Why This Change Is Needed</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Current Strength</h3>
+        <p>Case-level attribution works for Service Cloud scenarios and is easy to demo with Case Explorer.</p>
+        <span class="status now">Keep</span>
+      </div>
+      <div class="card">
+        <h3>Current Gap</h3>
+        <p>Many Agentforce agents do useful work without touching a Case. Those costs should not be forced into Case-specific screens or labels.</p>
+        <span class="status risk">Gap</span>
+      </div>
+      <div class="card">
+        <h3>Required Direction</h3>
+        <p>Generalize to work-level attribution while keeping Case as the first specialized explorer.</p>
+        <span class="status next">Next</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cost Sources</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Role</th>
+          <th>How The Calculator Should Use It</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Digital Wallet / consumption records</td>
+          <td>Commercial source of truth for metered consumption, credits, entitlements, and remaining capacity when exposed in the org.</td>
+          <td>Use for authoritative consumption totals and reconciliation. Join to operational activity where identifiers, timestamps, agent names, or session references allow matching.</td>
+        </tr>
+        <tr>
+          <td>Agentforce conversation/session records</td>
+          <td>Runtime evidence of agent sessions and customer or employee interactions.</td>
+          <td>Create usage anchors by agent, session, channel, date, and participant. Link to work items where possible.</td>
+        </tr>
+        <tr>
+          <td>Agent actions and event logs</td>
+          <td>Evidence of actions, tools, prompts, and automation work performed by agents.</td>
+          <td>Attribute action-heavy costs to agent, action name, topic, business process, and related record.</td>
+        </tr>
+        <tr>
+          <td>Service Cloud records</td>
+          <td>Operational context for Case, Account, Contact, queues, status, and outcomes.</td>
+          <td>Continue supporting Case Explorer and service cost reporting.</td>
+        </tr>
+        <tr>
+          <td>Sales, commerce, field service, and custom objects</td>
+          <td>Operational context for non-service Agentforce work.</td>
+          <td>Link usage to Opportunity, Lead, Order, Work Order, custom work records, or configured business objects.</td>
+        </tr>
+        <tr>
+          <td>Org configuration and rate tables</td>
+          <td>Contract rates, fallback rates, billing model, allocation rules, and confidence thresholds.</td>
+          <td>Calculate estimated or actual allocated cost and flag missing-rate or low-confidence rows.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Target Data Model</h2>
+    <p>Keep the existing cost ledger, but add a generic attribution layer so each ledger row can identify the business object, owner, process, and confidence level without requiring a Case.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Object / Concept</th>
+          <th>Purpose</th>
+          <th>Key Fields</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cost Ledger</td>
+          <td>Normalized row-level cost record.</td>
+          <td>Cost, credits, conversations, source, agent, action, topic, channel, outcome, timestamp, calculation basis.</td>
+        </tr>
+        <tr>
+          <td>Attribution Target</td>
+          <td>Generic business record link for any Salesforce object.</td>
+          <td>Target object API name, target record Id, target display name, target type, confidence, allocation method.</td>
+        </tr>
+        <tr>
+          <td>Agent Catalog</td>
+          <td>Known Agentforce agents and their business ownership.</td>
+          <td>Agent Id, name, version, type, owning team, business process, default allocation rules.</td>
+        </tr>
+        <tr>
+          <td>Allocation Rule</td>
+          <td>Declarative rules that map usage to business context.</td>
+          <td>Source object, matching fields, priority, target object, fallback behavior, expiration.</td>
+        </tr>
+        <tr>
+          <td>Reconciliation Run</td>
+          <td>Compares commercial consumption against attributed ledger totals.</td>
+          <td>Period, Digital Wallet total, ledger total, variance, unmatched amount, status.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="diagram">Digital Wallet / Usage Totals
+          +
+Native Agentforce Runtime Records
+          +
+Salesforce Business Records
+          |
+          v
+Native Source Discovery and Sync
+          |
+          v
+Usage Staging
+          |
+          v
+Cost Ledger
+          |
+          +--> Case Explorer
+          +--> Usage Explorer
+          +--> Agent / Action Explorer
+          +--> Reconciliation Dashboard
+          +--> Agentforce Cost Q&amp;A</div>
+  </section>
+
+  <section>
+    <h2>Supported Attribution Targets</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Target</th>
+          <th>Priority</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Case</td>
+          <td>Now</td>
+          <td>Keep as first specialized explorer for Service Cloud support scenarios.</td>
+        </tr>
+        <tr>
+          <td>Conversation or session</td>
+          <td>Next</td>
+          <td>Required when no business object can be found but the runtime session is known.</td>
+        </tr>
+        <tr>
+          <td>Agent and action</td>
+          <td>Next</td>
+          <td>Required for automation-heavy agents and internal agents.</td>
+        </tr>
+        <tr>
+          <td>Account and Contact</td>
+          <td>Next</td>
+          <td>Useful when agent work is customer-related but not tied to a Case.</td>
+        </tr>
+        <tr>
+          <td>Lead and Opportunity</td>
+          <td>Phase 2</td>
+          <td>Supports sales agents and revenue operations workflows.</td>
+        </tr>
+        <tr>
+          <td>Order and commerce records</td>
+          <td>Phase 2</td>
+          <td>Supports order status, returns, refunds, commerce support, and buying assistant agents.</td>
+        </tr>
+        <tr>
+          <td>Work Order</td>
+          <td>Phase 2</td>
+          <td>Supports field service agents and dispatch workflows.</td>
+        </tr>
+        <tr>
+          <td>Custom object</td>
+          <td>Phase 3</td>
+          <td>Admin-configured object and field mapping for customer-specific agents.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>User Experience Changes</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Rename Positioning</h3>
+        <p>Move customer-facing copy from Case-only language to Agentforce cost attribution. Keep Case Explorer as a focused detail view.</p>
+      </div>
+      <div class="card">
+        <h3>Add Usage Explorer</h3>
+        <p>Browse ledger rows by agent, action, session, target object, business process, channel, outcome, and confidence.</p>
+      </div>
+      <div class="card">
+        <h3>Add Reconciliation</h3>
+        <p>Show Digital Wallet consumption, attributed ledger total, variance, and unmatched usage for a selected period.</p>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Screen</th>
+          <th>Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Dashboard</td>
+          <td>Add attributed vs unallocated cost, top agents, top actions, top target objects, and Digital Wallet variance.</td>
+        </tr>
+        <tr>
+          <td>Grouped Report</td>
+          <td>Add grouping by target object, business process, agent action, confidence, and source type.</td>
+        </tr>
+        <tr>
+          <td>Case Explorer</td>
+          <td>Keep unchanged for Case-specific analysis, but label it clearly as a Service Cloud view.</td>
+        </tr>
+        <tr>
+          <td>Usage Explorer</td>
+          <td>New generalized explorer for any usage row or attributed work item.</td>
+        </tr>
+        <tr>
+          <td>Admin Settings</td>
+          <td>Add source discovery, Digital Wallet reconciliation settings, allocation rules, and target object mappings.</td>
+        </tr>
+        <tr>
+          <td>Agentforce Q&amp;A</td>
+          <td>Expand supported questions beyond Case cost to agent, action, process, target object, unallocated, and variance questions.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Agentforce Q&amp;A Expansion</h2>
+    <p>The current Q&amp;A action should evolve from cost summaries and Case cost into attribution questions that mirror the expanded ledger.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Required Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Which agents cost the most this month?</td>
+          <td>Ledger grouped by agent and date period.</td>
+        </tr>
+        <tr>
+          <td>Which actions are driving cost?</td>
+          <td>Ledger grouped by action name and agent.</td>
+        </tr>
+        <tr>
+          <td>How much Agentforce cost is not tied to a business record?</td>
+          <td>Attribution target null or low-confidence rows.</td>
+        </tr>
+        <tr>
+          <td>What did sales agents cost by opportunity?</td>
+          <td>Opportunity attribution targets and agent catalog.</td>
+        </tr>
+        <tr>
+          <td>Where does Digital Wallet usage not reconcile to attributed ledger cost?</td>
+          <td>Reconciliation run, wallet total, ledger total, variance.</td>
+        </tr>
+        <tr>
+          <td>What did this agent do, and why did it cost that amount?</td>
+          <td>Agent, action, session, target record, and calculation basis.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Implementation Phases</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Phase</th>
+          <th>Outcome</th>
+          <th>Deliverables</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Phase 1: Generalize Ledger Attribution</td>
+          <td>Ledger rows can point to any work target, not only Case.</td>
+          <td>Attribution fields/object, source sync mapping, report service updates, tests.</td>
+        </tr>
+        <tr>
+          <td>Phase 2: Agent and Action Reporting</td>
+          <td>Admins can see cost by agent, action, topic, channel, and business process.</td>
+          <td>Agent catalog, action summaries, dashboard cards, grouped report options.</td>
+        </tr>
+        <tr>
+          <td>Phase 3: Usage Explorer</td>
+          <td>Users can inspect any attributed or unallocated usage row.</td>
+          <td>New LWC, controller, filters, detail panels, links to target records.</td>
+        </tr>
+        <tr>
+          <td>Phase 4: Digital Wallet Reconciliation</td>
+          <td>Commercial consumption can be compared to attributed ledger cost.</td>
+          <td>Discovery, staging, reconciliation run object, variance dashboard, health checks.</td>
+        </tr>
+        <tr>
+          <td>Phase 5: Configurable Target Mapping</td>
+          <td>Customers can map custom agent work to custom objects.</td>
+          <td>Admin rule UI, mapping metadata, validation, audit logging.</td>
+        </tr>
+        <tr>
+          <td>Phase 6: Expanded Agent Q&amp;A</td>
+          <td>Agentforce answers broader attribution and reconciliation questions.</td>
+          <td>Q&amp;A parser/controller updates, new tests, Enhanced Web Chat smoke tests.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Acceptance Criteria</h2>
+    <ul>
+      <li>Case Explorer still works for Service Cloud cases.</li>
+      <li>Usage Explorer can show costs not linked to Cases.</li>
+      <li>Dashboard separates attributed, unallocated, and low-confidence cost.</li>
+      <li>Reports group by agent, action, target object, business process, channel, outcome, and period.</li>
+      <li>Digital Wallet reconciliation shows period total, ledger total, variance, and unmatched usage.</li>
+      <li>Agentforce Q&amp;A answers supported cost questions without inventing values.</li>
+      <li>All new labels remain customer-friendly and avoid system-value formatting.</li>
+      <li>All functionality remains fully Salesforce-native for this release track.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Risks And Open Questions</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Risk</th>
+          <th>Mitigation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Digital Wallet data availability varies by org, edition, and permissions.</td>
+          <td>Use dynamic source discovery and show reconciliation readiness instead of hard failure.</td>
+        </tr>
+        <tr>
+          <td>Some detailed messaging data may not be SOQL-queryable in every org.</td>
+          <td>Anchor on available on-platform objects first; report gaps; keep detailed off-platform APIs as future scope unless Salesforce-native access is available.</td>
+        </tr>
+        <tr>
+          <td>Attribution can be ambiguous when an agent touches multiple records.</td>
+          <td>Store confidence, allocation method, and raw source reference; show unallocated and low-confidence rows explicitly.</td>
+        </tr>
+        <tr>
+          <td>Customer-specific agents may use custom objects and custom prompts.</td>
+          <td>Add configurable mapping rules and audit every mapping change.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+</body>
+</html>

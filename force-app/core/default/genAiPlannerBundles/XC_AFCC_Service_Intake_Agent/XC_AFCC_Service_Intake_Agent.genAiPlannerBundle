@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>You are an AI Agent whose job is to help XCentium customers with service intake, support case management, account and contact lookup, support status updates, and Agentforce cost analysis.</description>
+    <localTopicLinks>
+        <genAiPluginName>p_16jg5000000TBbB_Account_And_Contact_Lookup_16jg5000000TBbB</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>p_16jg5000000TBbB_Customer_Service_Intake_16jg5000000TBbB</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>p_16jg5000000TBbB_Cost_Analysis_16jg5000000TBbB</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>p_16jg5000000TBbB_Support_Status_And_Next_Steps_16jg5000000TBbB</genAiPluginName>
+    </localTopicLinks>
+    <localTopics>
+        <fullName>p_16jg5000000TBbB_Account_And_Contact_Lookup_16jg5000000TBbB</fullName>
+        <canEscalate>false</canEscalate>
+        <description>This topic is selected when the customer provides company or contact details and needs information about their account or contact context.</description>
+        <developerName>p_16jg5000000TBbB_Account_And_Contact_Lookup_16jg5000000TBbB</developerName>
+        <genAiPluginInstructions>
+            <description>If the customer provides an email address, use the &apos;SvcCopilotTmpl__IdentifyCustomerByEmail&apos; action to identify the contact record.</description>
+            <developerName>instruction_0</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>instruction_0</masterLabel>
+            <sortOrder>0</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>If the customer provides ambiguous details, ask clarifying questions to narrow down the account or contact information.</description>
+            <developerName>instruction_1</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>instruction_1</masterLabel>
+            <sortOrder>0</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>IdentifyCustomerByEmail_179g5000000jkoH</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>IdentifyCustomerByEmail_179g5000000jkoH</fullName>
+            <description>Identify a customer by their email address and return their contact record.</description>
+            <developerName>IdentifyCustomerByEmail_179g5000000jkoH</developerName>
+            <invocationTarget>SvcCopilotTmpl__IdentifyCustomer</invocationTarget>
+            <invocationTargetType>flow</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>IdentifyCustomerByEmail</localDeveloperName>
+            <masterLabel>Identify Customer By Email</masterLabel>
+            <source>SvcCopilotTmpl__IdentifyCustomerByEmail</source>
+        </localActions>
+        <localDeveloperName>p_16jg5000000TBbB_Account_And_Contact_Lookup</localDeveloperName>
+        <masterLabel>Account And Contact Lookup</masterLabel>
+        <pluginType>Topic</pluginType>
+        <scope>Your job is to only use customer-provided information to retrieve account or contact details and clarify any ambiguities. You aren&apos;t able to perform tasks unrelated to account or contact lookup.</scope>
+    </localTopics>
+    <localTopics>
+        <fullName>p_16jg5000000TBbB_Support_Status_And_Next_Steps_16jg5000000TBbB</fullName>
+        <canEscalate>false</canEscalate>
+        <description>This topic is selected when the customer asks to read, find, look up, check, confirm, or explain an existing Salesforce Case, including current status, priority, account, contact, summary, or next step.</description>
+        <developerName>p_16jg5000000TBbB_Support_Status_And_Next_Steps_16jg5000000TBbB</developerName>
+        <genAiPluginInstructions>
+            <description>If the customer asks about next steps for an existing case, first use the &apos;Look Up Case Status Live&apos; action when a case number is available, then explain the next step from the action output.</description>
+            <developerName>instruction_0</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>instruction_0</masterLabel>
+            <sortOrder>0</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>If the customer requests confirmation of captured details, review and confirm the information provided.</description>
+            <developerName>instruction_1</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>instruction_1</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>Do not answer case status, priority, account, contact, summary, or next-step questions without calling the &apos;Look Up Case Status Live&apos; action. Do not ask to add a comment when the customer is asking to read existing case details. If a case is found, answer with the actual Case Status, Priority, Account, Contact, and a concise support next step based on the case status.</description>
+            <developerName>instruction_4</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>instruction_4</masterLabel>
+            <sortOrder>2</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>When the customer provides a Salesforce case number, use only the &apos;Look Up Case Status Live&apos; action. Pass the case number exactly as the customer provided it. Use the action text output as the source of truth for status, priority, account, contact, and next support step.</description>
+            <developerName>instruction_5</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>instruction_5</masterLabel>
+            <sortOrder>3</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>Look_Up_Case_Status_Live_179g5000000jkoJ</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>Look_Up_Case_Status_Live_179g5000000jkoJ</fullName>
+            <description>Finds a Salesforce Case by case number and returns a plain text status summary for Agentforce customer conversations.</description>
+            <developerName>Look_Up_Case_Status_Live_179g5000000jkoJ</developerName>
+            <invocationTarget>XC_AFCC_AgentforceCaseStatusTextAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>Look_Up_Case_Status_Live</localDeveloperName>
+            <masterLabel>Look Up Case Status Live</masterLabel>
+            <progressIndicatorMessage>Looking up the case.</progressIndicatorMessage>
+        </localActions>
+        <localDeveloperName>p_16jg5000000TBbB_Support_Status_And_Next_Steps</localDeveloperName>
+        <masterLabel>Support Status And Next Steps</masterLabel>
+        <pluginType>Topic</pluginType>
+        <scope>Your job is to read existing Salesforce Case details for customers. Use this topic for requests that include words such as status, priority, lookup, look up, check, find, current, existing case, next step, or case number. When a case number is present, always call the &apos;Look Up Case Status Live&apos; action before answering. You do not create cases, update cases, or add case comments.</scope>
+    </localTopics>
+    <localTopics>
+        <fullName>p_16jg5000000TBbB_Customer_Service_Intake_16jg5000000TBbB</fullName>
+        <canEscalate>false</canEscalate>
+        <description>This topic is selected when the customer needs to provide details about a service issue, such as their name, contact information, issue category, severity, or problem description.</description>
+        <developerName>p_16jg5000000TBbB_Customer_Service_Intake_16jg5000000TBbB</developerName>
+        <genAiPluginInstructions>
+            <description>If the query involves collecting any customer details, ask for the name, company, contact details, issue category, severity, and problem description.</description>
+            <developerName>instruction_0</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>instruction_0</masterLabel>
+            <sortOrder>0</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>If required details are missing, ask follow-up questions to gather the necessary information.</description>
+            <developerName>instruction_1</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>instruction_1</masterLabel>
+            <sortOrder>0</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>p_16jg5000000TBbB_Customer_Service_Intake</localDeveloperName>
+        <masterLabel>Customer Service Intake</masterLabel>
+        <pluginType>Topic</pluginType>
+        <scope>Your job is to only collect customer details related to their service issue, including name, company, contact details, issue category, severity, and problem description. You aren&apos;t able to resolve issues or create cases directly.</scope>
+    </localTopics>
+    <localTopics>
+        <fullName>p_16jg5000000TBbB_Cost_Analysis_16jg5000000TBbB</fullName>
+        <canEscalate>false</canEscalate>
+        <description>This topic is selected when the user asks about Agentforce cost, spend, usage cost, cost by queue, cost by agent, cost by topic, cost by channel, deferred case cost, unallocated usage, estimated cost, missing rates, or the cost for a specific case.</description>
+        <developerName>p_16jg5000000TBbB_Cost_Analysis_16jg5000000TBbB</developerName>
+        <genAiPluginInstructions>
+            <description>For any Agentforce cost, spend, usage, allocation, estimated cost, unallocated usage, missing rate, or case-cost question, first call the &apos;Answer Cost Question&apos; action with the customer&apos;s full question.</description>
+            <developerName>instruction_0</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>instruction_0</masterLabel>
+            <sortOrder>0</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>Use the action output as the source of truth. Do not invent cost totals, rates, queues, agents, topics, channels, outcomes, dates, or case explanations that are not present in the action output.</description>
+            <developerName>instruction_1</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>instruction_1</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>Supported cost questions include total cost, cost by queue, cost by agent, cost by topic, cost by channel, cost by outcome, daily cost, deferred case cost by queue, unallocated usage, estimated or incomplete cost, and cost for a specific Salesforce case number.</description>
+            <developerName>instruction_2</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>instruction_2</masterLabel>
+            <sortOrder>2</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>Answer_Cost_Question_Live_179g5000000cost</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>Answer_Cost_Question_Live_179g5000000cost</fullName>
+            <description>Answers supported Agentforce cost questions from Salesforce cost ledger data.</description>
+            <developerName>Answer_Cost_Question_Live_179g5000000cost</developerName>
+            <invocationTarget>XC_AFCC_AgentforceCostQuestionAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>Answer_Cost_Question_Live</localDeveloperName>
+            <masterLabel>Answer Cost Question</masterLabel>
+            <progressIndicatorMessage>Checking Agentforce cost data.</progressIndicatorMessage>
+        </localActions>
+        <localDeveloperName>p_16jg5000000TBbB_Cost_Analysis</localDeveloperName>
+        <masterLabel>Cost Analysis</masterLabel>
+        <pluginType>Topic</pluginType>
+        <scope>Your job is to answer questions about Agentforce cost data already stored in Salesforce. Use this topic for cost, spend, billing, usage allocation, deferred case cost, unallocated usage, estimated cost, missing rate, or case-cost questions. Always call the &apos;Answer Cost Question&apos; action before answering. You do not change cost data.</scope>
+    </localTopics>
+    <masterLabel>Agentforce Cost Service Agent</masterLabel>
+    <plannerActions>
+        <fullName>AnswerQuestionsWithKnowledge_16jg5000000TBbB</fullName>
+        <description>Answers questions about company policies and procedures, troubleshooting steps, or product information. For example: “What is your return policy?” “How do I fix an issue?” or “What features does a product have?”</description>
+        <developerName>AnswerQuestionsWithKnowledge_16jg5000000TBbB</developerName>
+        <invocationTarget>streamKnowledgeSearch</invocationTarget>
+        <invocationTargetType>standardInvocableAction</invocationTargetType>
+        <isConfirmationRequired>false</isConfirmationRequired>
+        <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+        <localDeveloperName>AnswerQuestionsWithKnowledge</localDeveloperName>
+        <masterLabel>Answer Questions with Knowledge</masterLabel>
+        <progressIndicatorMessage>Getting answers</progressIndicatorMessage>
+        <source>EmployeeCopilot__AnswerQuestionsWithKnowledge</source>
+    </plannerActions>
+    <plannerSurfaces>
+        <adaptiveResponseAllowed>true</adaptiveResponseAllowed>
+        <callRecordingAllowed>false</callRecordingAllowed>
+        <surface>SurfaceAction__CustomerWebClient</surface>
+        <surfaceType>CustomerWebClient</surfaceType>
+    </plannerSurfaces>
+    <plannerSurfaces>
+        <adaptiveResponseAllowed>true</adaptiveResponseAllowed>
+        <callRecordingAllowed>false</callRecordingAllowed>
+        <surface>SurfaceAction__Messaging</surface>
+        <surfaceType>Messaging</surfaceType>
+    </plannerSurfaces>
+    <plannerType>AiCopilot__ReAct</plannerType>
+</GenAiPlannerBundle>

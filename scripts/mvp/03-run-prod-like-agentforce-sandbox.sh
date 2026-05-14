@@ -7,6 +7,7 @@ RUN_KEY="afcc-prod-like-$(date +%Y%m%d%H%M%S)"
 DEPLOY_CORE="false"
 SEED_BUSINESS_DATA="true"
 CONVERSATION_RUNNER=""
+ENHANCED_WEB_CHAT_URL="${XC_AFCC_EWC_URL:-}"
 AGENT_ID="${XC_AFCC_AGENT_ID:-}"
 ECA_ID="${XC_AFCC_ECA_ID:-}"
 OAUTH_CONSUMER_ID="${XC_AFCC_OAUTH_CONSUMER_ID:-}"
@@ -23,6 +24,7 @@ while [[ $# -gt 0 ]]; do
     --deploy-core) DEPLOY_CORE="true"; shift ;;
     --skip-seed) SEED_BUSINESS_DATA="false"; shift ;;
     --conversation-runner) CONVERSATION_RUNNER="$2"; shift 2 ;;
+    --enhanced-web-chat-url) ENHANCED_WEB_CHAT_URL="$2"; shift 2 ;;
     --agent-id) AGENT_ID="$2"; shift 2 ;;
     --eca-id) ECA_ID="$2"; shift 2 ;;
     --consumer-id) OAUTH_CONSUMER_ID="$2"; shift 2 ;;
@@ -47,7 +49,8 @@ if ! [[ "$CASE_COUNT" =~ ^[0-9]+$ ]] || [[ "$CASE_COUNT" -lt 1 ]]; then
   exit 2
 fi
 
-sf org display --target-org "$TARGET_ORG" --json >/dev/null
+org_display="$(sf org display --target-org "$TARGET_ORG" --json)"
+instance_url="$(echo "$org_display" | jq -r '.result.instanceUrl')"
 org_json="$(sf data query --target-org "$TARGET_ORG" --json --query "SELECT IsSandbox, OrganizationType FROM Organization LIMIT 1")"
 is_sandbox="$(echo "$org_json" | jq -r '.result.records[0].IsSandbox')"
 org_type="$(echo "$org_json" | jq -r '.result.records[0].OrganizationType')"
@@ -70,6 +73,7 @@ fi
 if [[ "$VALIDATE_ONLY" != "true" ]]; then
   sf org assign permset --name XC_AFCC_Admin --target-org "$TARGET_ORG" >/dev/null || true
   sf apex run --target-org "$TARGET_ORG" --file scripts/apex/validateSandboxReadiness.apex >/dev/null
+  sf apex run --target-org "$TARGET_ORG" --file scripts/apex/fixAgentforceEnhancedWebChatRouting.apex >/dev/null
 fi
 
 if [[ "$VALIDATE_ONLY" != "true" && "$SEED_BUSINESS_DATA" == "true" ]]; then
@@ -86,6 +90,10 @@ fi
 runtime_before="$(sf apex run --target-org "$TARGET_ORG" --file scripts/apex/validateAgentforceRuntimeReadiness.apex 2>&1 || true)"
 
 runner_result="SKIPPED"
+if [[ -z "$CONVERSATION_RUNNER" && -n "$ENHANCED_WEB_CHAT_URL" ]]; then
+  CONVERSATION_RUNNER="scripts/conversation/run-enhanced-web-chat-conversations.mjs"
+fi
+
 if [[ "$VALIDATE_ONLY" != "true" && -n "$CONVERSATION_RUNNER" ]]; then
   if [[ ! -x "$CONVERSATION_RUNNER" ]]; then
     echo "Conversation runner is not executable: $CONVERSATION_RUNNER" >&2
@@ -96,6 +104,7 @@ if [[ "$VALIDATE_ONLY" != "true" && -n "$CONVERSATION_RUNNER" ]]; then
   XC_AFCC_RUN_KEY="$RUN_KEY" \
   XC_AFCC_CASE_COUNT="${CONVERSATION_COUNT:-$CASE_COUNT}" \
   XC_AFCC_CASE_SUBJECT_PREFIX="AFCC Prod-Like $RUN_KEY Case" \
+  XC_AFCC_EWC_URL="$ENHANCED_WEB_CHAT_URL" \
   XC_AFCC_AGENT_ID="$AGENT_ID" \
   XC_AFCC_ECA_ID="$ECA_ID" \
   XC_AFCC_OAUTH_CONSUMER_ID="$OAUTH_CONSUMER_ID" \
@@ -115,7 +124,7 @@ runtime_after="$(sf apex run --target-org "$TARGET_ORG" --file scripts/apex/vali
 business_case_count="$(sf data query --target-org "$TARGET_ORG" --json --query "SELECT COUNT() FROM Case WHERE Subject LIKE 'AFCC Prod-Like $RUN_KEY Case%'" | jq -r '.result.totalSize')"
 live_ledger_count="$(sf data query --target-org "$TARGET_ORG" --json --query "SELECT COUNT() FROM XC_AFCC_Cost_Ledger__c WHERE XC_AFCC_Source_System__c = 'LIVE'" | jq -r '.result.totalSize')"
 staging_count="$(sf data query --target-org "$TARGET_ORG" --json --query "SELECT COUNT() FROM XC_AFCC_Usage_Staging__c WHERE XC_AFCC_Source_System__c = 'LIVE'" | jq -r '.result.totalSize')"
-app_url="$(sf org open --target-org "$TARGET_ORG" --path lightning/n/XC_AFCC_Setup --url-only --json | jq -r '.result.url // empty')"
+app_url="${instance_url}/lightning/n/XC_AFCC_Setup"
 
 if [[ "$SKIP_OPEN" != "true" ]]; then
   sf org open --target-org "$TARGET_ORG" --path lightning/n/XC_AFCC_Setup >/dev/null

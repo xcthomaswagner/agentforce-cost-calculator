@@ -18,5 +18,5 @@
   "name": "xc-agentforce-cost-calculator",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "60.0"
+  "sourceApiVersion": "66.0"
 }

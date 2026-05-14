@@ -32,6 +32,59 @@ Prerequisites:
 
 Important runtime note: Agent API sessions are real Agentforce runtime sessions, but they do not populate `MessagingSession`, `Conversation`, or `AgentWork` in this org. To test those objects, use a real Messaging channel such as Enhanced Web Chat or BYOC Messaging and point the conversation runner at that channel.
 
+## Enhanced Web Chat Runner
+
+`scripts/conversation/run-enhanced-web-chat-conversations.mjs` drives the real Enhanced Web Chat browser widget. It opens a fresh browser context for each Case, authenticates through the local Salesforce CLI session, opens the chat launcher, waits for the agent greeting, sends a realistic customer message, validates the visible answer, captures screenshots, and confirms the Agentforce event log shows the live case lookup action.
+
+Example single-case smoke test:
+
+```bash
+scripts/conversation/run-enhanced-web-chat-conversations.mjs \
+  --target-org agentcalc-af \
+  --chat-url "https://orgfarm-6743bee981-dev-ed--c.develop.vf.force.com/apex/ESWXCAFCCAgentforceCos1778718120601" \
+  --case-number 00001322 \
+  --count 1
+```
+
+Example custom cost-question smoke test:
+
+```bash
+scripts/conversation/run-enhanced-web-chat-conversations.mjs \
+  --target-org agentcalc-af \
+  --chat-url "https://orgfarm-6743bee981-dev-ed--c.develop.vf.force.com/apex/ESWXCAFCCAgentforceCos1778718120601" \
+  --message "What is total Agentforce cost?" \
+  --expect-text "total Agentforce cost" \
+  --expect-text "0.95" \
+  --expect-text "190" \
+  --event-action-regex "actionName: Answer_Cost_Question_Live_.*isSuccessful: true" \
+  --count 1
+```
+
+Example prod-like run through Step 3:
+
+```bash
+scripts/mvp/03-run-prod-like-agentforce-sandbox.sh \
+  --target-org agentcalc-af \
+  --case-count 150 \
+  --conversation-count 150 \
+  --enhanced-web-chat-url "https://orgfarm-6743bee981-dev-ed--c.develop.vf.force.com/apex/ESWXCAFCCAgentforceCos1778718120601"
+```
+
+Validation performed per run:
+
+- Visible reply includes the expected Case number, status, and priority.
+- For custom prompts, visible reply includes every `--expect-text` value.
+- Failure phrases such as "unable to look up" fail the run.
+- A screenshot is written for every conversation.
+- `ConversationDefinitionEventLog` is polled until the expected action success is visible. The default is `Look_Up_Case_Status_Live`; custom prompts can pass `--event-action-regex`.
+
+Prerequisites:
+
+- `npm install` has been run locally so Playwright is available.
+- The target org is authenticated with Salesforce CLI.
+- Enhanced Web Chat test page is reachable by the authenticated user.
+- The Agentforce service agent is active and its Support Status topic uses `Look Up Case Status Live`.
+
 ## Environment Variables
 
 The Step 3 script passes:
@@ -42,6 +95,10 @@ The Step 3 script passes:
 | `XC_AFCC_RUN_KEY` | Unique run key used in seeded Case subjects. |
 | `XC_AFCC_CASE_COUNT` | Requested number of seeded business cases. |
 | `XC_AFCC_CASE_SUBJECT_PREFIX` | Prefix for seeded Case subjects. |
+| `XC_AFCC_EWC_URL` | Enhanced Web Chat test page URL for the browser runner. |
+| `XC_AFCC_EWC_MESSAGE` | Optional custom prompt for a one-off smoke test. |
+| `XC_AFCC_EWC_EXPECT_TEXT` | Optional pipe-delimited visible text expectations for custom prompts. |
+| `XC_AFCC_EWC_EVENT_ACTION_REGEX` | Optional event-log action success pattern. |
 
 ## Runner Responsibilities
 

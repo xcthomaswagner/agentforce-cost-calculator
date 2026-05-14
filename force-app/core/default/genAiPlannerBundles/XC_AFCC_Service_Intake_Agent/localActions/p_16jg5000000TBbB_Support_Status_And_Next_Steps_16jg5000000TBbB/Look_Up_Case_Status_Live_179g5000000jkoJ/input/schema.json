@@ -1,0 +1,14 @@
+{
+  "required" : [ "caseNumbers" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "caseNumbers" : {
+      "title" : "caseNumbers",
+      "description" : "Salesforce case number from the customer message. Pass the case number exactly as provided, such as 00001322.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

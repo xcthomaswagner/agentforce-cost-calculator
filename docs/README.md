@@ -34,6 +34,7 @@ Production deployment is explicitly **not included** in this release.
 | `EXECUTION_SPEC.md` | Full functional and technical release spec |
 | `NATIVE_EXECUTION_SPEC.md` | Corrected native Agentforce/Service Cloud release spec |
 | `NATIVE_AGENTFORCE_SOURCE_SPEC.md` | Native object discovery and sync model |
+| `AGENTFORCE_WORKING_MEMORY.md` | Current Agentforce setup findings, fixes, traces, and next debug steps |
 | `SALESFORCE_METADATA_SPEC.md` | Salesforce objects, fields, classes, LWCs, permissions |
 | `DEPLOYMENT_SCRIPTS_SPEC.md` | Required Mac/CLI scripts and expected behavior |
 | `SYNTHETIC_DATA_AND_TESTING_SPEC.md` | Synthetic scenario model, test data contracts, readiness checks |

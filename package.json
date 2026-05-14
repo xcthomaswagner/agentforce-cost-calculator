@@ -1,0 +1,11 @@
+{
+  "name": "xc-agentforce-cost-calculator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "conversation:enhanced-web-chat": "node scripts/conversation/run-enhanced-web-chat-conversations.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.60.0"
+  }
+}

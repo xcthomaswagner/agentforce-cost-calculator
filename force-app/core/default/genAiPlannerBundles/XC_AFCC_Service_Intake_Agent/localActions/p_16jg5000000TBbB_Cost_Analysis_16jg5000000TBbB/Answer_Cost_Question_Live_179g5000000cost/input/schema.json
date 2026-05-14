@@ -1,0 +1,14 @@
+{
+  "required" : [ "questions" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "questions" : {
+      "title" : "questions",
+      "description" : "The full customer question about Agentforce cost, spend, deferred case cost, cost by queue, cost by agent, cost by topic, cost by channel, unallocated usage, estimated cost, missing rates, or case cost.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}
