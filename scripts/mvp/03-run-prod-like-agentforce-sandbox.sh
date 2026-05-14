@@ -7,6 +7,10 @@ RUN_KEY="afcc-prod-like-$(date +%Y%m%d%H%M%S)"
 DEPLOY_CORE="false"
 SEED_BUSINESS_DATA="true"
 CONVERSATION_RUNNER=""
+AGENT_ID="${XC_AFCC_AGENT_ID:-}"
+ECA_ID="${XC_AFCC_ECA_ID:-}"
+OAUTH_CONSUMER_ID="${XC_AFCC_OAUTH_CONSUMER_ID:-}"
+CONVERSATION_COUNT=""
 SYNC_NATIVE="true"
 VALIDATE_ONLY="false"
 SKIP_OPEN="false"
@@ -19,6 +23,10 @@ while [[ $# -gt 0 ]]; do
     --deploy-core) DEPLOY_CORE="true"; shift ;;
     --skip-seed) SEED_BUSINESS_DATA="false"; shift ;;
     --conversation-runner) CONVERSATION_RUNNER="$2"; shift 2 ;;
+    --agent-id) AGENT_ID="$2"; shift 2 ;;
+    --eca-id) ECA_ID="$2"; shift 2 ;;
+    --consumer-id) OAUTH_CONSUMER_ID="$2"; shift 2 ;;
+    --conversation-count) CONVERSATION_COUNT="$2"; shift 2 ;;
     --skip-sync) SYNC_NATIVE="false"; shift ;;
     --validate-only) VALIDATE_ONLY="true"; shift ;;
     --skip-open) SKIP_OPEN="true"; shift ;;
@@ -86,8 +94,11 @@ if [[ "$VALIDATE_ONLY" != "true" && -n "$CONVERSATION_RUNNER" ]]; then
   echo "Running configured Agentforce conversation runner"
   XC_AFCC_TARGET_ORG="$TARGET_ORG" \
   XC_AFCC_RUN_KEY="$RUN_KEY" \
-  XC_AFCC_CASE_COUNT="$CASE_COUNT" \
+  XC_AFCC_CASE_COUNT="${CONVERSATION_COUNT:-$CASE_COUNT}" \
   XC_AFCC_CASE_SUBJECT_PREFIX="AFCC Prod-Like $RUN_KEY Case" \
+  XC_AFCC_AGENT_ID="$AGENT_ID" \
+  XC_AFCC_ECA_ID="$ECA_ID" \
+  XC_AFCC_OAUTH_CONSUMER_ID="$OAUTH_CONSUMER_ID" \
   "$CONVERSATION_RUNNER"
   runner_result="PASS"
 elif [[ -z "$CONVERSATION_RUNNER" ]]; then

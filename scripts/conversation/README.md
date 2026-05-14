@@ -4,6 +4,34 @@
 
 The runner is intentionally external to Core metadata. It should drive the configured Agentforce runtime through the same channel production uses, such as Agent API, Enhanced Web Chat, or BYOC Messaging. It must not insert `MessagingSession`, `Conversation`, `AgentWork`, staging, or ledger records directly.
 
+## Agent API Runner
+
+`scripts/conversation/run-agent-api-conversations.mjs` drives the Salesforce Agent API directly. It starts real Agentforce sessions, sends support-intake utterances tied to seeded `Case` records, and ends each session.
+
+Example:
+
+```bash
+scripts/conversation/run-agent-api-conversations.mjs \
+  --target-org agentcalc-af \
+  --agent-id 0Xx... \
+  --eca-id 0xI... \
+  --consumer-id 888... \
+  --run-key afcc-prod-like-YYYYMMDDHHMMSS \
+  --case-subject-prefix "AFCC Prod-Like afcc-prod-like-YYYYMMDDHHMMSS Case" \
+  --count 150
+```
+
+Prerequisites:
+
+- Agentforce platform enabled.
+- Active Agentforce service agent.
+- External Client App with OAuth scopes `Api`, `RefreshToken`, `Chatbot`, and `SFApiPlatform`.
+- OAuth client credentials flow enabled with an API-only integration user.
+- The integration user's profile or permission set pre-authorized for the External Client App.
+- REST access to External Client App consumer secrets enabled while the runner executes.
+
+Important runtime note: Agent API sessions are real Agentforce runtime sessions, but they do not populate `MessagingSession`, `Conversation`, or `AgentWork` in this org. To test those objects, use a real Messaging channel such as Enhanced Web Chat or BYOC Messaging and point the conversation runner at that channel.
+
 ## Environment Variables
 
 The Step 3 script passes:
