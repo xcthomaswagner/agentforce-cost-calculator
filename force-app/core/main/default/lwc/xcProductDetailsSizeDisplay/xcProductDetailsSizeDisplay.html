@@ -1,0 +1,386 @@
+<template>
+    <div if:true={productAggregates} class={sizeSectionClass}>
+            <div class="slds-col pds-enter pds-enter--1">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <template for:each={sortedSizes} for:item="colVal">
+                                <th style='text-align: center;' key={colVal}>{colVal}</th>
+                            </template>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={productAggregates.rowValues} for:item="row">
+                            <!--<template for:each={startEndDates.keyMap} for:item="sEndDates">-->
+                            <template if:true={row.key}>
+                                <tr key={row.key}>
+                                    <th class={row.headerCellClass}>
+                                        <template if:true={row.variantImgSrc}>
+                                            <img class="rowVariantImage" src={row.variantImgSrc} alt={row.value} />
+                                        </template>
+                                        <div style="margin:auto;">
+                                            <div>
+                                                <template if:true={showInventory}>
+                                                    <span class="slds-p-right_small inlineBlock" style="min-width: 100px;">{row.inventoryDate}</span>
+                                                </template>
+                                                <!-- <span class="inlineBlock">{row.value}</span> -->
+                                                <span class="inlineBlock">
+                                            <a data={row.value} href="#" class="tip">
+                                            <img class="slds-p-bottom_xxx-small slds-p-right_xx-small" style="transform: scale(.85);" src={row.imgSrc} />
+                                        </a></span>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <template for:each={row.keyMap} for:item="map">
+                                        <template if:true={map.showQtyBox}>
+                                            <td style="padding-left: 5px; padding-right: 5px;" key={map.key}>
+                                                <div style="max-width:50px; margin:auto;">
+                                                    <div class="sizeInput">
+                                                        <input
+                                                            class="slds-input sizeInputControl"
+                                                            style="margin-bottom: 6px;"
+                                                            type="number"
+                                                            name={map.key}
+                                                            value={map.cellQty}
+                                                            min="0"
+                                                            max={map.maxQuantity}
+                                                            data-price={map.price}
+                                                            data-rowidx={map.rowIdx}
+                                                            data-colidx={map.colIdx}
+                                                            data-prodid={map.prodId}
+                                                            data-inventoryitemid={map.inventoryItemId}
+                                                            oninput={quantityChangeHandler}
+                                                            onchange={quantityChangeHandler}
+                                                            disabled={map.disabled} />
+                                                    </div>
+                                                    <div class="inventoryAmount" if:true={showInventory}>
+                                                        <div if:false={map.disabled}
+                                                            style='font-weight:bold; font-size: x-small; text-align: center;'>
+                                                            {map.quantity}
+                                                        </div>
+                                                        <div if:true={map.disabled}
+                                                            style='font-weight:bold; font-size: x-small; text-align: center;text-wrap:nowrap;'>
+                                                            SOLD OUT
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </template>
+                                        <template if:false={map.showQtyBox}>
+                                            <td style="padding-left: 5px; padding-right: 5px;" key={map.key}>
+                                                <div style="max-width:45px;">
+                                                    <p class="slds-align_absolute-center">N/A</p>
+                                                </div>
+                                            </td>
+                                        </template>
+                                    </template>
+                                </tr>
+                            </template>
+                            <!--</template>-->
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+            <template if:true={showRecommendationDialog}>
+                <div class="recommendationModal" role="presentation">
+                    <div class="recommendationBackdrop" onclick={closeRecommendationDialog}></div>
+                    <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="recommended-heading"
+                        class="recommendationPanel">
+                        <header class="recommendationHeader">
+                            <h2 id="recommended-heading" class="recommendationTitle">Size Run Advisor</h2>
+                            <button class="slds-button slds-button_icon slds-button_icon-small recommendationClose"
+                                title="Close" onclick={closeRecommendationDialog}>
+                                <lightning-icon icon-name="utility:close" alternative-text="Close" size="x-small">
+                                </lightning-icon>
+                            </button>
+                        </header>
+                        <div class="recommendationBody">
+                            <div class="recommendationControls">
+                                <div class="recommendationField">
+                                    <label class="recommendationControlLabel" for="recommendation-amount">Order Amount</label>
+                                    <input
+                                        id="recommendation-amount"
+                                        class="recommendationControl"
+                                        type="number"
+                                        min="1"
+                                        step="1"
+                                        value={recommendationAmount}
+                                        onchange={handleRecommendationAmountChange} />
+                                </div>
+                                <div class="recommendationField">
+                                    <label class="recommendationControlLabel" for="recommendation-template">Curve Template</label>
+                                    <select
+                                        id="recommendation-template"
+                                        class="recommendationControl"
+                                        value={selectedRecommendationTemplate}
+                                        onchange={handleRecommendationTemplateChange}>
+                                        <template for:each={recommendationTemplateOptions} for:item="option">
+                                            <option key={option.value} value={option.value}>{option.label}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <button
+                                    type="button"
+                                    class="recommendationCalculateButton"
+                                    onclick={requestRecommendation}
+                                    disabled={disableRecommendButton}>
+                                    {recommendButtonLabel}
+                                </button>
+                            </div>
+                            <template if:true={hasSavedRecommendationOptions}>
+                                <div class="savedRecommendationControls">
+                                    <div class="recommendationField">
+                                        <label class="recommendationControlLabel" for="saved-recommendation-template">Saved Recommendation</label>
+                                        <select
+                                            id="saved-recommendation-template"
+                                            class="recommendationControl"
+                                            value={selectedSavedSizeRunKey}
+                                            onchange={handleSavedSizeRunChange}>
+                                            <option value="">Select a saved recommendation</option>
+                                            <template for:each={savedSizeRunSelectOptions} for:item="option">
+                                                <option key={option.selectValue} value={option.selectValue}>{option.label}</option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <template if:true={hasSelectedSavedRecommendation}>
+                                        <button
+                                            type="button"
+                                            class="savedRecommendationDeleteButton"
+                                            onclick={deleteSavedRecommendation}
+                                            disabled={disableDeleteSavedRecommendation}>
+                                            {deleteSavedRecommendationButtonLabel}
+                                        </button>
+                                    </template>
+                                </div>
+                            </template>
+                            <template if:true={recommendationError}>
+                                <div class="slds-text-color_error slds-m-top_x-small">{recommendationError}</div>
+                            </template>
+                            <template if:true={hasRecommendation}>
+                                <div class="recommendationPreview">
+                                    <div class="recommendationSummary">
+                                        <div>
+                                            <div class="slds-text-title_caps">Recommendation</div>
+                                            <div class="slds-text-body_regular">{recommendation.message}</div>
+                                        </div>
+                                        <div class="recommendationTotals">
+                                            <span>{recommendationStatusLabel}</span>
+                                            <template if:true={recommendationTemplateLabel}>
+                                                <span>{recommendationTemplateLabel}</span>
+                                            </template>
+                                            <span>{recommendation.totalRecommendedQuantity} Units</span>
+                                            <lightning-formatted-number
+                                                value={recommendation.estimatedRecommendationAmount}
+                                                format-style="currency"
+                                                currency-code={recommendationCurrencyCode}>
+                                            </lightning-formatted-number>
+                                        </div>
+                                    </div>
+                                    <template if:true={hasRecommendationWarnings}>
+                                        <ul class="recommendationWarnings">
+                                            <template for:each={recommendationWarnings} for:item="warning">
+                                                <li key={warning}>{warning}</li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                    <section class="agentPanel">
+                                        <button
+                                            class="agentToggle"
+                                            type="button"
+                                            aria-expanded={isAgentPanelExpanded}
+                                            onclick={toggleAgentPanel}>
+                                            <span>Ask about this recommendation</span>
+                                            <lightning-icon icon-name={agentToggleIconName} alternative-text="" size="xx-small">
+                                            </lightning-icon>
+                                        </button>
+
+                                        <template if:true={isAgentPanelExpanded}>
+                                            <div class="agentBody">
+                                                <div class="agentMessages" aria-live="polite">
+                                                    <template for:each={agentMessages} for:item="message">
+                                                        <div key={message.key} class={message.className}>
+                                                            <div class="messageLabel">{message.label}</div>
+                                                            <div>{message.text}</div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+
+                                                <template if:true={hasAgentPreview}>
+                                                    <div class="previewBox">
+                                                        <div class="previewHeader">
+                                                            <div>
+                                                                <div class="previewTitle">Preview Changes</div>
+                                                                <div class="previewSummary">
+                                                                    {agentPreviewTotalUnits} units
+                                                                    <span class="previewDot">&bull;</span>
+                                                                    <lightning-formatted-number
+                                                                        value={agentPreviewEstimatedAmount}
+                                                                        format-style="currency"
+                                                                        currency-code={recommendationCurrencyCode}>
+                                                                    </lightning-formatted-number>
+                                                                </div>
+                                                            </div>
+                                                            <button class="applyPreviewButton" type="button" onclick={applyAgentPreview}>
+                                                                Update Recommendation
+                                                            </button>
+                                                        </div>
+                                                        <template if:true={hasAgentPreviewDiffs}>
+                                                            <div class="previewChangesTableWrap">
+                                                                <table class="previewChangesTable">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th scope="col">#</th>
+                                                                            <th scope="col">SKU</th>
+                                                                            <th scope="col">Size</th>
+                                                                            <th scope="col">Current</th>
+                                                                            <th scope="col">New</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <template for:each={agentPreviewDiffs} for:item="diff">
+                                                                            <tr key={diff.key}>
+                                                                                <td>{diff.rowNumber}</td>
+                                                                                <td>{diff.sku}</td>
+                                                                                <td>{diff.size}</td>
+                                                                                <td>{diff.previousQuantity}</td>
+                                                                                <td>{diff.revisedQuantity}</td>
+                                                                            </tr>
+                                                                        </template>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+
+                                                <template if:true={agentError}>
+                                                    <div class="agentError">{agentError}</div>
+                                                </template>
+
+                                                <div class="promptRow">
+                                                    <label class="promptLabel" for="size-run-agent-prompt">Question or adjustment</label>
+                                                    <div class="promptControls">
+                                                        <textarea
+                                                            id="size-run-agent-prompt"
+                                                            class="promptInput"
+                                                            maxlength={maxAgentPromptLength}
+                                                            value={agentPrompt}
+                                                            placeholder="Example: Set 1,3,5 and 7 to qty 25."
+                                                            oninput={handleAgentPromptInput}
+                                                            disabled={isAgentSending}>
+                                                        </textarea>
+                                                        <button
+                                                            class="sendButton"
+                                                            type="button"
+                                                            onclick={sendAgentPrompt}
+                                                            disabled={disableAgentSend}>
+                                                            {agentSendButtonLabel}
+                                                        </button>
+                                                    </div>
+                                                    <div class="promptHint">{agentRemainingCharacters} characters remaining</div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </section>
+                                    <div class="recommendationMatrixHeader">Recommendation Matrix</div>
+                                    <div class="recommendationTableWrap">
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered recommendationTable">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">SKU</th>
+                                                    <th scope="col">Size</th>
+                                                    <th scope="col">Qty</th>
+                                                    <th scope="col">Unit Price</th>
+                                                    <th scope="col">Estimated</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template for:each={recommendation.lines} for:item="line">
+                                                    <tr key={line.key}>
+                                                        <td>{line.rowNumber}</td>
+                                                        <td>{line.sku}</td>
+                                                        <td>{line.size}</td>
+                                                        <td>{line.quantity}</td>
+                                                        <td>
+                                                            <lightning-formatted-number
+                                                                value={line.unitPrice}
+                                                                format-style="currency"
+                                                                currency-code={recommendationCurrencyCode}>
+                                                            </lightning-formatted-number>
+                                                        </td>
+                                                        <td>
+                                                            <lightning-formatted-number
+                                                                value={line.estimatedAmount}
+                                                                format-style="currency"
+                                                                currency-code={recommendationCurrencyCode}>
+                                                            </lightning-formatted-number>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="saveRecommendationBox">
+                                        <div class="saveRecommendationTitle">Save this recommendation</div>
+                                        <div class="saveRecommendationType">
+                                            <strong>{saveRecommendationTemplateTypeLabel}</strong>
+                                            <span>{saveRecommendationTemplateTypeHelp}</span>
+                                        </div>
+                                        <div class="saveRecommendationControls">
+                                            <label class="saveRecommendationField">
+                                                <span>Name</span>
+                                                <input
+                                                    class="saveRecommendationInput"
+                                                    type="text"
+                                                    maxlength="80"
+                                                    value={savedRecommendationName}
+                                                    oninput={handleSavedRecommendationNameChange}
+                                                    disabled={isSavingRecommendation} />
+                                            </label>
+                                            <label class="saveRecommendationCheckbox">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={saveAvailableToAllUsers}
+                                                    onchange={handleSaveAvailableToAllUsersChange}
+                                                    disabled={isSavingRecommendation} />
+                                                <span>Available to all users</span>
+                                            </label>
+                                            <button
+                                                class="saveRecommendationButton"
+                                                type="button"
+                                                onclick={saveAgentRecommendation}
+                                                disabled={disableSaveRecommendation}>
+                                                {saveRecommendationButtonLabel}
+                                            </button>
+                                        </div>
+                                        <template if:true={saveRecommendationError}>
+                                            <div class="agentError">{saveRecommendationError}</div>
+                                        </template>
+                                        <template if:true={saveRecommendationMessage}>
+                                            <div class="saveRecommendationMessage">{saveRecommendationMessage}</div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <footer class="recommendationFooter">
+                            <lightning-button variant="neutral" label="Cancel" onclick={closeRecommendationDialog}>
+                            </lightning-button>
+                            <lightning-button
+                                variant="brand"
+                                label="Apply to Grid"
+                                onclick={applyRecommendationToGrid}
+                                disabled={disableApplyRecommendation}>
+                            </lightning-button>
+                        </footer>
+                    </section>
+                </div>
+            </template>
+            <div class="pds-actions pds-enter pds-enter--2">
+                <button class="slds-button slds-button_brand cartButton" onclick={addToCart} title="addToCart" disabled={noPrice}>Add to Cart</button>
+                <button class="slds-button slds-button_neutral" onclick={handleAddToList}>Add to List</button>
+            </div>
+        </div>
+</template>

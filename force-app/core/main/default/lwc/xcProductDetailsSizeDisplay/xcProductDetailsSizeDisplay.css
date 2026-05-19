@@ -1,0 +1,765 @@
+:host {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+/* Entrance (matches PDP display rhythm) */
+.pds-enter {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+}
+
+.sizesSection--revealed .pds-enter {
+  animation: pds-fade-up 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sizesSection--revealed .pds-enter--1 {
+  animation-delay: 0.06s;
+}
+
+.sizesSection--revealed .pds-enter--2 {
+  animation-delay: 0.14s;
+}
+
+@keyframes pds-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pds-enter {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+tr {
+    border-top: none;
+}
+
+a.tip {
+  color: #900;
+  text-decoration: none;
+}
+
+a.tip:hover {
+  color: red;
+  position: relative;
+}
+
+a.tip[data]:hover:after {
+  content: attr(data);
+  padding: 4px 8px;
+  color: #FFF;
+  position: absolute;
+  left: 100%;
+  top: 100%;
+  white-space: nowrap;
+  z-index: 1000;
+  border-radius: 5px ;
+  background: rgba(0,0,0,0.75);
+}
+
+.slds-p-right_small.inlineBlock {
+  min-width: 200px;
+  display: inline-block;
+}
+
+.slds-button.slds-button_brand.cartButton {
+	color: #fff;
+}
+
+.sizeInput {
+  margin-top: 8px;
+}
+
+.inventoryAmount {
+  margin-bottom: 12px;
+}
+
+.rowHeaderCell {
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 24px;
+}
+
+.rowHeaderCell--no-image {
+  margin-top: 12px;
+}
+
+.rowVariantImage {
+  width: 56px;
+  height: 56px;
+  border-radius: 4px;
+  border: 1px solid #d8dde6;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #fff;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.rowVariantImage:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  filter: saturate(1.03);
+}
+
+.sizesSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  column-gap: 8px;
+  position: relative;
+  width: 100%;
+  overflow: visible;
+}
+
+.pds-actions {
+  margin-top: 16px;
+  align-self: flex-start;
+}
+
+.recommendationModal {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  pointer-events: none;
+}
+
+.recommendationBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 7, 7, 0.48);
+  pointer-events: auto;
+}
+
+.recommendationPanel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(920px, calc(100vw - 48px));
+  max-height: min(760px, calc(100vh - 48px));
+  background: #fff;
+  border: 1px solid #d8dde6;
+  border-radius: 4px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+.recommendationHeader {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 18px 52px 14px 20px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.recommendationTitle {
+  margin: 0;
+  color: #1f1f1f;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.recommendationClose {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+
+.recommendationBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 18px 20px;
+  overflow: auto;
+}
+
+.recommendationControls {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(220px, 260px) auto;
+  align-items: end;
+  gap: 12px;
+  width: min(100%, 700px);
+}
+
+.savedRecommendationControls {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(220px, 260px) auto;
+  align-items: end;
+  gap: 12px;
+  width: min(100%, 700px);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.savedRecommendationControls .recommendationField {
+  grid-column: 1 / span 2;
+}
+
+.savedRecommendationDeleteButton {
+  border: 1px solid #ba0517;
+  border-radius: 2px;
+  background: #fff;
+  color: #ba0517;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1;
+  min-height: 36px;
+  padding: 0 14px;
+  white-space: nowrap;
+}
+
+.savedRecommendationDeleteButton:hover,
+.savedRecommendationDeleteButton:focus {
+  background: #fef1f2;
+  outline: 0;
+}
+
+.savedRecommendationDeleteButton:disabled {
+  border-color: #c9c9c9;
+  color: #747474;
+  cursor: default;
+  background: #f3f3f3;
+}
+
+.recommendationField {
+  min-width: 0;
+}
+
+.recommendationControlLabel {
+  display: block;
+  margin: 0;
+  color: #6b6b6b;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.recommendationControl {
+  display: block !important;
+  width: 100% !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  margin: 0 !important;
+  padding: 0 12px !important;
+  border: 1px solid #c9c9c9;
+  border-radius: 2px;
+  background: #fff;
+  color: #1f1f1f;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 38px !important;
+  box-sizing: border-box;
+}
+
+input.recommendationControl {
+  appearance: textfield;
+  -webkit-appearance: textfield;
+}
+
+.recommendationControl:focus {
+  border-color: #2e844a;
+  box-shadow: 0 0 0 1px #2e844a inset;
+  outline: 0;
+}
+
+.recommendationControl::-webkit-outer-spin-button,
+.recommendationControl::-webkit-inner-spin-button {
+  margin: 0;
+}
+
+.recommendationCalculateButton {
+  all: unset;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  min-width: 112px;
+  box-sizing: border-box;
+  margin: 0 !important;
+  padding: 0 18px !important;
+  border: 1px solid #2e844a !important;
+  border-radius: 2px !important;
+  background: #fff !important;
+  color: #2e844a !important;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 38px !important;
+  text-align: center;
+  white-space: nowrap;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.recommendationCalculateButton:hover,
+.recommendationCalculateButton:focus {
+  background: #f3f8f4;
+  border-color: #2e844a;
+  color: #2e844a;
+  outline: 0;
+}
+
+.recommendationCalculateButton:disabled {
+  border-color: #c9c9c9;
+  color: #747474;
+  cursor: default;
+  background: #f3f3f3;
+}
+
+.recommendationPreview {
+  margin-top: 16px;
+}
+
+.recommendationSummary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.recommendationTotals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.recommendationWarnings {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #8a6d3b;
+}
+
+.recommendationMatrixHeader {
+  margin-top: 12px;
+  color: #223d32;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.recommendationTableWrap {
+  margin-top: 6px;
+  max-height: min(320px, 38vh);
+  overflow: auto;
+  width: 100%;
+}
+
+.recommendationTable th,
+.recommendationTable td {
+  white-space: nowrap;
+}
+
+.recommendationTable {
+  min-width: 640px;
+}
+
+.recommendationApply {
+  margin-top: 12px;
+}
+
+.agentPanel {
+  margin-top: 16px;
+  border: 1px solid #dddbda;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.agentToggle {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 14px;
+  color: #223d32;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.agentToggle:focus {
+  box-shadow: 0 0 0 2px rgba(55, 126, 81, 0.35) inset;
+}
+
+.agentBody {
+  border-top: 1px solid #dddbda;
+  padding: 14px;
+}
+
+.agentMessages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.agentMessage {
+  max-width: 86%;
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.agentMessage--assistant {
+  align-self: flex-start;
+  background: #f3f3f3;
+  color: #223d32;
+}
+
+.agentMessage--user {
+  align-self: flex-end;
+  background: #edf6ef;
+  color: #223d32;
+}
+
+.messageLabel {
+  margin-bottom: 2px;
+  color: #5f5f5f;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.previewBox {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #c9c9c9;
+  border-radius: 4px;
+  background: #fbfbfb;
+}
+
+.previewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.previewTitle {
+  color: #223d32;
+  font-weight: 700;
+}
+
+.previewSummary {
+  color: #4f4f4f;
+  font-size: 0.8125rem;
+}
+
+.previewDot {
+  padding: 0 4px;
+}
+
+.applyPreviewButton,
+.sendButton {
+  border: 1px solid #2e844a;
+  border-radius: 2px;
+  background: #fff;
+  color: #2e844a;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1;
+  min-height: 36px;
+  padding: 0 14px;
+  white-space: nowrap;
+}
+
+.applyPreviewButton:hover,
+.applyPreviewButton:focus,
+.sendButton:hover,
+.sendButton:focus {
+  background: #f3f8f4;
+  outline: 0;
+}
+
+.sendButton:disabled {
+  border-color: #c9c9c9;
+  color: #747474;
+  cursor: default;
+  background: #f3f3f3;
+}
+
+.previewChangesTableWrap {
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+.previewChangesTable {
+  width: 100%;
+  border-collapse: collapse;
+  color: #223d32;
+  font-size: 0.8125rem;
+  table-layout: fixed;
+}
+
+.previewChangesTable th,
+.previewChangesTable td {
+  border-top: 1px solid #ecebea;
+  padding: 7px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.previewChangesTable th {
+  background: #f3f3f3;
+  color: #4f4f4f;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.previewChangesTable th:first-child,
+.previewChangesTable td:first-child {
+  width: 44px;
+}
+
+.previewChangesTable th:nth-child(3),
+.previewChangesTable td:nth-child(3),
+.previewChangesTable th:nth-child(4),
+.previewChangesTable td:nth-child(4),
+.previewChangesTable th:nth-child(5),
+.previewChangesTable td:nth-child(5) {
+  width: 72px;
+}
+
+.previewChangesTable td:nth-child(2) {
+  overflow-wrap: anywhere;
+}
+
+.previewChangesTable td:nth-child(5) {
+  font-weight: 700;
+}
+
+.saveRecommendationBox {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #ecebea;
+}
+
+.saveRecommendationTitle {
+  color: #223d32;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.saveRecommendationType {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+  color: #5f5f5f;
+  font-size: 0.75rem;
+}
+
+.saveRecommendationType strong {
+  color: #223d32;
+}
+
+.saveRecommendationControls {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto auto;
+  align-items: end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.saveRecommendationField span,
+.saveRecommendationCheckbox span {
+  color: #5f5f5f;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.saveRecommendationInput {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  height: 36px;
+  margin-top: 3px;
+  padding: 0 10px;
+  border: 1px solid #c9c9c9;
+  border-radius: 2px;
+  color: #223d32;
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+
+.saveRecommendationInput:focus {
+  border-color: #2e844a;
+  box-shadow: 0 0 0 1px #2e844a inset;
+  outline: 0;
+}
+
+.saveRecommendationCheckbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  white-space: nowrap;
+}
+
+.saveRecommendationButton {
+  border: 1px solid #2e844a;
+  border-radius: 2px;
+  background: #fff;
+  color: #2e844a;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1;
+  min-height: 36px;
+  padding: 0 14px;
+  white-space: nowrap;
+}
+
+.saveRecommendationButton:hover,
+.saveRecommendationButton:focus {
+  background: #f3f8f4;
+  outline: 0;
+}
+
+.saveRecommendationButton:disabled {
+  border-color: #c9c9c9;
+  color: #747474;
+  cursor: default;
+  background: #f3f3f3;
+}
+
+.saveRecommendationMessage {
+  margin-top: 8px;
+  color: #2e844a;
+  font-size: 0.875rem;
+}
+
+.agentError {
+  margin-top: 12px;
+  color: #ba0517;
+  font-size: 0.875rem;
+}
+
+.promptRow {
+  margin-top: 12px;
+}
+
+.promptLabel {
+  display: block;
+  color: #6b6b6b;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.promptControls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.promptInput {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-height: 68px;
+  resize: vertical;
+  border: 1px solid #c9c9c9;
+  border-radius: 2px;
+  color: #223d32;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  padding: 8px 10px;
+}
+
+.promptInput:focus {
+  border-color: #2e844a;
+  box-shadow: 0 0 0 1px #2e844a inset;
+  outline: 0;
+}
+
+.promptHint {
+  margin-top: 4px;
+  color: #747474;
+  font-size: 0.75rem;
+}
+
+.recommendationFooter {
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 14px 20px;
+  border-top: 1px solid #e5e5e5;
+}
+
+@media (max-width: 600px) {
+  .recommendationModal {
+    align-items: flex-start;
+    padding: 16px;
+    overflow: auto;
+  }
+
+  .recommendationPanel {
+    width: 100%;
+    max-height: calc(100vh - 32px);
+  }
+
+  .recommendationControls {
+    grid-template-columns: 1fr;
+  }
+
+  .savedRecommendationControls {
+    grid-template-columns: 1fr;
+  }
+
+  .savedRecommendationControls .recommendationField {
+    grid-column: 1;
+  }
+
+  .recommendationCalculateButton {
+    width: 100% !important;
+  }
+
+  .recommendationFooter {
+    flex-direction: column-reverse;
+  }
+
+  .agentMessage {
+    max-width: 100%;
+  }
+
+  .previewHeader,
+  .promptControls,
+  .saveRecommendationControls {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
